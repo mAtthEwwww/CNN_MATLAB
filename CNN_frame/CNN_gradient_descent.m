@@ -1,5 +1,15 @@
 function CNN =  CNN_gradient_descent ( CNN , momentum , learning_rate , weight_decay )
+% CNN_gradient_descent.m
+% function for mini-batch gradient descent, with momentum
+%
+% Inputs:
+%       CNN  is an array of cell, each cell is a layer of CNN
+%       momentum  is a number between 0 and 1, presents the rate of gradient momentum
+%
+% Outputs:
+%       CNN  is an array of cell
 
+% update the weight and bias layer by layer
 for l = 2 : length( CNN )
     if strcmp( CNN{l}.type, 'convolution' )
         for j = 1 : CNN{l}.output

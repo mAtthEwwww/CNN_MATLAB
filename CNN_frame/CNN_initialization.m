@@ -21,7 +21,7 @@ for l = 2 : 1 : length( CNN );
     elseif strcmp( CNN{l}.type, 'activation' )
         CNN{l} = activation_constructor( CNN{l}, CNN{l-1} );
     else
-    % otherwiss
+    % otherwise
         error('layer type wrong')
     end
 end
