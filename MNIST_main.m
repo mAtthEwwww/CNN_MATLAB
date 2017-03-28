@@ -24,7 +24,7 @@ tr_config.momentum = 0;
 tr_config.weight_decay = 0.0001;
 tr_config.batch_size = 50;
 tr_config.validate_interval = 200;
-tr_config.max_epochs = 1;
+tr_config.max_epochs = 15;
 tr_config.cost_function = 'cross_entropy';
 tr_config.threshold = 0.002;
 
