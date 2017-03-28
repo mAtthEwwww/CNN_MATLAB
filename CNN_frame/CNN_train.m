@@ -1,7 +1,6 @@
 function CNN = CNN_train( train_input , train_target , validation_input , validation_target , config , CNN )
 
 learning_rate = config.learning_rate;
-learning_period = config.learning_period;
 half_life = config.half_life;
 weight_decay = config.weight_decay;
 max_epochs = config.max_epochs;
@@ -24,20 +23,13 @@ k = -log(2) / (iterations * half_life );            %¸ù¾Ý°ëË¥ÆÚ¼ÆËãÖ¸ÊýË¥¼õµÄ²ÎÊ
 while epochs < max_epochs && go_on
     epochs = epochs + 1;
     
-    if any( epochs == learning_period )             %Èç¹ûÑµÁ·µ½´ïÄ³¸öÐÂµÄ½×¶Î£¬ÄÇÃ´¸üÐÂÑ§Ï°ËÙÂÊ
-        lr = learning_rate( epochs == learning_period );
-        learning_period( epochs == learning_period ) = 0;
-    end
-    
     disorder = randperm( N );                       %Ã¿´Î¶ÔÕû¸öÑµÁ·¼¯½øÐÐÑµÁ·Ê±£¬ÏÈ´òÂÒË³Ðò£¬²úÉúÒ»¸öËæ»úÐòÁÐË÷Òý
     sub_iter = 0;                                   %ÉèÖÃ¼ÆÊýÆ÷£¬¼ÇÂ¼ÔÚÕâ¸öepochÄÚµÄµü´ú´ÎÊý
     while sub_iter < iterations && go_on
         
         iter = iter + 1;
         sub_iter = sub_iter + 1;
-        if length( learning_rate ) == 1             %Èç¹û²»ÊÇ·Ö½×¶ÎÑ§Ï°
-            lr = learning_rate * exp( k * iter );   %ÄÇÃ´¶ÔÑ§Ï°ËÙÂÊ½øÐÐÖ¸ÊýË¥¼õ
-        end
+        lr = learning_rate * exp( k * iter );   %ÄÇÃ´¶ÔÑ§Ï°ËÙÂÊ½øÐÐÖ¸ÊýË¥¼õ
         
         if sub_iter < iterations                    %°´ÕÕÎÞ·Å»ØµÄ·½Ê½£¬´ÓÑµÁ·¼¯ÖÐ³éÈ¡Ò»¸ömini-batch
             [batch_input, batch_target] = get_mini_batch( train_input, train_target, disorder( (sub_iter-1)*batch_size+1 : sub_iter*batch_size ) );

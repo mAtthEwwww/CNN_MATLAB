@@ -10,8 +10,8 @@ layer.vector = false;
 
 for j = 1 : layer.output
     for i = 1 : input
-        layer.kernel{i}{j} = filler( input , layer.output , [ layer.kernel_size(1) , layer.kernel_size(2) ] , layer.weight_filler , layer.weight_std );
-        layer.m_grad_kernel{i}{j} = zeros( [ layer.kernel_size(1) , layer.kernel_size(2) ] );
+        layer.kernel{i}{j} = filler( input , layer.output , [ layer.kernel_size(1) , layer.kernel_size(2) ] , layer.weight_filler);
+        layer.m_grad_kernel{i}{j} = zeros([layer.kernel_size(1), layer.kernel_size(2)] );
     end
     layer.bias{j} = 0;
     layer.m_grad_bias{j} = 0;
