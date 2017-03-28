@@ -47,7 +47,6 @@ for l = L : -1 : 2
             end
         elseif strcmp( CNN{l}.method, 'average' )
             for j = 1 : CNN{l}.output
-%                 size(CNN{l}.sampling_size)
                 CNN{l-1}.delta{j} = up_average_sampling( CNN{l}.delta{j} , CNN{l-1}.map_size , CNN{l}.sampling_size , CNN{l}.stride , CNN{l}.pad_size );
             end
         else

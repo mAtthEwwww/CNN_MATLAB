@@ -1,4 +1,29 @@
 function CNN = CNN_train( train_input , train_target , validation_input , validation_target , config , CNN )
+% CNN_train.m
+% CNN training function, optimizing with stochastic gradient descent
+
+% Inputs:
+%       train_input  is a array of cell, each cell is a 3-order tensor,
+%                   which represents a color channel
+%       train_target  is a bool matrix, each row represents a one-hot 
+%                   label of a sample
+%       validation_input  is a array of cell
+%       validation_target  is a bool matrix
+%       config  is a struct contains training strategy:
+%               learning_rate, learning rate of gradient descent
+%               half_life, half life(epoch) of the learning rate
+%               weight_decay, weight decay parameter,or L2 norm regularization
+%               max_epochs, the maximum number of epochs
+%               momentum, the momentum of gradient
+%               batch_size, the size of mini batch
+%               validate_interval, the iteration interval between successive validation
+%               cost_function, the cost function, or loss function, or object funtion
+%               threshold, the threshold of cost function value
+%       CNN  is an array of cell, each cell is a layer of CNN
+%
+% Outputs:
+%       CNN  is an array of cell
+
 
 learning_rate = config.learning_rate;
 half_life = config.half_life;
@@ -23,34 +48,34 @@ k = -log(2) / (iterations * half_life );            %¸ù¾Ý°ëË¥ÆÚ¼ÆËãÖ¸ÊýË¥¼õµÄ²ÎÊ
 while epochs < max_epochs && go_on
     epochs = epochs + 1;
     
-    disorder = randperm( N );                       %Ã¿´Î¶ÔÕû¸öÑµÁ·¼¯½øÐÐÑµÁ·Ê±£¬ÏÈ´òÂÒË³Ðò£¬²úÉúÒ»¸öËæ»úÐòÁÐË÷Òý
+    shuffle = randperm( N );                       %Ã¿´Î¶ÔÕû¸öÑµÁ·¼¯½øÐÐÑµÁ·Ê±£¬ÏÈ´òÂÒË³Ðò£¬²úÉúÒ»¸öËæ»úÐòÁÐË÷Òý
     sub_iter = 0;                                   %ÉèÖÃ¼ÆÊýÆ÷£¬¼ÇÂ¼ÔÚÕâ¸öepochÄÚµÄµü´ú´ÎÊý
     while sub_iter < iterations && go_on
         
         iter = iter + 1;
         sub_iter = sub_iter + 1;
-        lr = learning_rate * exp( k * iter );   %ÄÇÃ´¶ÔÑ§Ï°ËÙÂÊ½øÐÐÖ¸ÊýË¥¼õ
+        lr = learning_rate * exp(k * iter);
         
-        if sub_iter < iterations                    %°´ÕÕÎÞ·Å»ØµÄ·½Ê½£¬´ÓÑµÁ·¼¯ÖÐ³éÈ¡Ò»¸ömini-batch
-            [batch_input, batch_target] = get_mini_batch( train_input, train_target, disorder( (sub_iter-1)*batch_size+1 : sub_iter*batch_size ) );
-        else                                        %ÔÚÕâ¸öepochÄÚ£¬½øÐÐ×îºóÒ»´Îµü´úµÄÊ±ºò£¬½«Ê£ÏÂËùÓÐÑµÁ·Êý¾Ý½øÐÐÑµÁ·£¨´¦Àíbatch_size²»ÄÜÕû³ýÑµÁ·¼¯µÄÇé¿ö£©
-            [batch_input, batch_target] = get_mini_batch( train_input, train_target, disorder( (sub_iter-1)*batch_size+1 : end ) );
+        if sub_iter < iterations
+            [batch_input, batch_target] = get_mini_batch(train_input, train_target, shuffle((sub_iter-1)*batch_size+1 : sub_iter*batch_size));
+        else
+            [batch_input, batch_target] = get_mini_batch(train_input, train_target, shuffle((sub_iter-1)*batch_size+1 : end));
         end
         
-        CNN = CNN_feedforward( batch_input , CNN );                             %Ç°Ïò´«²¥
-        CNN = CNN_backprogagation( batch_target , CNN );                    %·´Ïò´«²¥
-        CNN = CNN_gradient_descent( CNN , momentum , lr , weight_decay );   %¸üÐÂÌÝ¶È
+        CNN = CNN_feedforward(batch_input, CNN);
+        CNN = CNN_backprogagation(batch_target, CNN);
+        CNN = CNN_gradient_descent(CNN, momentum, lr, weight_decay);
         
-        if mod( iter, validate_interval ) == 0
-            validated = validated + 1;                                      %Ã¿µü´úÒ»¶¨´ÎÊý£¬ÀûÓÃÑéÖ¤¼¯½øÐÐ²âÊÔ
-            [ accuracy , ~ ] = CNN_test( validation_input, validation_target, CNN );
-            validate_accuracy( 1, validated ) = iter;
-            validate_accuracy( 2, validated ) = accuracy;
+        if mod(iter, validate_interval) == 0
+            validated = validated + 1;
+            [accuracy, ~] = CNN_test(validation_input, validation_target, CNN);
+            validate_accuracy(1, validated) = iter;
+            validate_accuracy(2, validated) = accuracy;
         end
-        cost( iter ) = cost_function( CNN{ length( CNN ) }.X , batch_target );        
-        average_cost( iter ) = mean( cost( max( 1 , iter - iterations ) : iter ) );
-        fprintf('Accuracy: %.4f, LR: %.7f, EPO: %i/%i, ITR: %i/%i, AVG: %f, CUR: %f\n' , validate_accuracy( 2, validated ) , lr , epochs , max_epochs , sub_iter , iterations , average_cost( iter ) , cost( iter ) );
-        if average_cost( iter ) < threshold
+        cost(iter) = cost_function(CNN{length(CNN)}.X, batch_target);        
+        average_cost(iter) = mean(cost(max(1, iter - iterations) : iter));
+        fprintf('Accuracy: %.4f, LR: %.7f, EPO: %i/%i, ITR: %i/%i, AVG: %f, CUR: %f\n' , validate_accuracy(2, validated), lr, epochs, max_epochs, sub_iter, iterations, average_cost(iter), cost(iter));
+        if average_cost(iter) < threshold
             go_on = 0;
         end
     end

@@ -2,6 +2,7 @@ function layer = convolution_constructor( layer , input, input_map_size )
 
 if layer.expand == true
     layer.map_size = input_map_size;
+    layer.pad = (layer.kernel_size - 1) / 2;
 else
     layer.map_size = input_map_size - layer.kernel_size + 1;
 end
