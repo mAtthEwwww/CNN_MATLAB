@@ -1,4 +1,4 @@
-% 详细注释见cifar_CNN.m
+% see more detail in CIFAR_main.m
 
 rand( 'state' , 0 );
 randn( 'state' , 0 );
@@ -45,9 +45,9 @@ CNN{ 2 }.output = 20;
 CNN{ 2 }.kernel_size = [5, 5];
 CNN{ 2 }.expand = false;
 
-CNN{ 3 }.type = 'sampling';                            %第三层属性为采样层
+CNN{ 3 }.type = 'sampling';
 CNN{ 3 }.method = 'max';
-CNN{ 3 }.sampling_size = [2, 2];                        %第三层采样窗直径 map size: 24/2=129
+CNN{ 3 }.sampling_size = [2, 2];
 CNN{ 3 }.stride = 2;
 
 CNN{ 4 }.type = 'convolution';
@@ -65,7 +65,6 @@ CNN{ 5 }.stride = 2;
 
 CNN{ 6 }.type = 'full_connection';
 CNN{ 6 }.weight_filler = weight_filler;
-CNN{ 6 }.weight_std = 0.01;              %仅当weight_filler为gaussian时有效
 CNN{ 6 }.weight_learning_rate = 1;
 CNN{ 6 }.bias_learning_rate = 2;
 CNN{ 6 }.output = 200;
@@ -73,7 +72,7 @@ CNN{ 6 }.output = 200;
 CNN{ 7 }.type = 'activation';
 CNN{ 7 }.activation = activation;
 
-CNN{ 8 }.type = 'full_connection';                            %属性为全连接层
+CNN{ 8 }.type = 'full_connection';
 CNN{ 8 }.weight_filler = weight_filler;
 CNN{ 8 }.weight_learning_rate = 1;
 CNN{ 8 }.bias_learning_rate = 2;
@@ -94,7 +93,6 @@ CNN = CNN_train( train_input, train_target, validation_input, validation_target,
 train_time = toc;
 
 [accuracy, confusion_matrix] = CNN_test( test_input, test_target, CNN );
-result = { CNN, confusion_matrix , bad };
 
 struct_str = sprintf( 'layer 1   type: input                          width:%i\r\n' , CNN{ 1 }.output );
 for l = 2 : length( CNN )
@@ -108,20 +106,19 @@ for l = 2 : length( CNN )
         struct_str = sprintf( '%slayer %i   type: activation             %s\r\n' , struct_str, l, CNN{l}.activation );
     end
 end
-run_str = sprintf( 'Accuracy %.2f%%   cost %f   time %.1fs   epochs %i   learning rate %.7f   batchsize %i   momentum %.1f   half life %i   activation %s   weight filler %s', accuracy*100 , CNN{1}.cost , train_time , CNN{1}.epochs , tr_config.learning_rate , tr_config.batch_size , tr_config.momentum , tr_config.half_life , activation , weight_filler );
+run_str = sprintf( 'Accuracy %.2f%%   cost %f   time %.1fs   epochs %i   learning rate %.7f   batchsize %i   momentum %.1f   half life %i   activation %s   weight filler %s', accuracy*100 , CNN{1}.cost , train_time , CNN{1}.epochs , tr_config.learning_rate , tr_config.batch_size , tr_config.momentum , tr_config.half_life , activation , weight_filler.type );
 log_str = sprintf( '%s\r\n%s' , run_str , struct_str );                 
 
-%将程序运行数据输出到日志
-fid = fopen('Log\Log.txt','a');
-fprintf( fid , '%s\r\n\r\n' , log_str );
+% output the running log
+fid = fopen('Log/Log', 'a');
+fprintf(fid, '%s\r\n\r\n', log_str );
 fclose(fid);
 
 title_str = sprintf( 'AC:%.2f%%, cost:%.4f, TIME:%.1fs, EPOCHS:%i, LR:%.7f, BATCHSIZE:%i, %s', ...
      accuracy*100 , CNN{1}.cost , train_time , CNN{1}.epochs , tr_config.learning_rate , tr_config.batch_size , activation );
-%给函数图像添加文字标题
+
 title( title_str );
 ylim([0 2.5]);
 
-%将图片按照输出到"Log\image_name.png"
-saveas( gcf , sprintf( '%s%s%s' , 'Log\' , run_str , '.png' ) );
-
+% output the figure
+saveas( gcf , sprintf( '%s%s%s' , 'Log/' , run_str , '.png' ) );

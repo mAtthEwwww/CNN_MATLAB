@@ -1,13 +1,16 @@
+% CIFAR_main.m
 
-%% 导入已经做好预处理的数据
+% configure random seed
+rand( 'state' , 0 );
+randn( 'state' , 0 );
 
-rand( 'state' , 0 );                                            %设置随机数种
-randn( 'state' , 0 );                                           %设置随机数种
-
+% add path
 addpath 'CIFAR_10_dataset'
 addpath 'CNN_frame'
 addpath 'CNN_frame/functions'
 addpath 'CNN_frame/constructor'
+
+%% -------------prepare data set-------------
 
 % Load the cifar-10 data set, with with pre-treated method 2.
 % Train and test are struct, both of which contain a input set X and a output set T.
@@ -33,7 +36,7 @@ test_target = test.T;
 input_size = size( train_input{1}( : , : , 1 ) );
 
 % configure the number of color channel
-input_maps = length( train_input );
+input_channel = length( train_input );
 
 % release memory
 clear train
@@ -41,8 +44,9 @@ clear test
 
 
 %% -------------configure the training strategy-------------
-tr_config.learning_period = [ 1 ];          %按照epochs来分割各个训练阶段
-tr_config.learning_rate = [ 0.0005 ];%为各个训练阶段设置学习速率
+
+% configure the initial learning rate
+tr_config.learning_rate = 0.0005;
 
 % configure the strategy of learning rate decay
 % the half life of learning rate (epoch)
@@ -61,7 +65,7 @@ tr_config.batch_size = 10;
 tr_config.validate_interval = 5000;
 
 % configure the maximum number of epochs
-tr_config.max_epochs = 12;
+tr_config.max_epochs = 3;
 
 % configure the cost function
 tr_config.cost_function = 'cross_entropy';
@@ -70,107 +74,222 @@ tr_config.cost_function = 'cross_entropy';
 tr_config.threshold = 0.05;
 
 % configure the initialization method for weighted and bias
-weight_filler = 'gaussian';
+weight_filler.type = 'gaussian';
 
 % configure the activation function
 activation = 'relu';
 
+% configure the output function
+output_function = 'softmax';
+
 %% -------------configure the structure of CNN-------------
-CNN{ 1 }.output = input_maps;
-CNN{ 1 }.map_size = input_size;:
 
-CNN{ 2 }.type = 'convolution';                                  %类别为卷积层
-CNN{ 2 }.weight_filler = weight_filler;                         %用上面预先设置好的weight_filler方法来初始化该层的权值
-CNN{ 2 }.weight_std = 0.001;                                    %如果使用0均值高斯分布，那么设置初始化的标准差
-CNN{ 2 }.kernel_size = [ 5 , 5 ];                               %设置卷积核的大小
-CNN{ 2 }.expand = true;                                         %设置卷积时候是否对输入矩阵进行扩展，当打开该项时，需要使用大小为奇数的卷积核
-CNN{ 2 }.weight_learning_rate = 1;                              %设置权值相对于全局学习速率的倍率
-CNN{ 2 }.bias_learning_rate = 2;                                %设置偏置相对于全局学习速率的倍率
-CNN{ 2 }.output = 32;                                           %设置输出的矩阵数
+% input layer
 
-CNN{ 3 }.type = 'sampling';                                     %类别为采样层
-CNN{ 3 }.method = 'max';                                        %设置采样方法
-CNN{ 3 }.sampling_size = [ 3 , 3 ];                             %采样窗大小
-CNN{ 3 }.stride = 2;                                            %采样窗移动步长
+% configure the number of output channel
+CNN{ 1 }.output = input_channel;
 
-CNN{ 4 }.type = 'activation';                                   %类别为激活层
-CNN{ 4 }.activation = 'relu';                                   %设置激活函数类型
+% configure the map size
+CNN{ 1 }.map_size = input_size;
+
+% convolution layer
+% configure the layer type
+CNN{ 2 }.type = 'convolution';
+
+% configure the weight initialization method
+CNN{ 2 }.weight_filler = weight_filler;
+
+% configure the std for the weight
+CNN{ 2 }.weight_filler.std = 0.001;
+
+% configure the size of convolution kernel
+CNN{ 2 }.kernel_size = [ 5 , 5 ];
+
+% configure the zero padding
+% when turn on zero padding, make sure the kernel size is odd
+CNN{ 2 }.expand = true;
+
+% configure the relative learning rate of the weight (kernel)
+CNN{ 2 }.weight_learning_rate = 1;
+
+% configure the relative learning rate of the bias (intercept)
+CNN{ 2 }.bias_learning_rate = 2;
+
+% configure the number of channel
+CNN{ 2 }.output = 32;
+
+
+% sampling layer
+
+CNN{ 3 }.type = 'sampling';
+
+% configure the down sampling method
+CNN{ 3 }.method = 'max';
+
+% configure the size of sampling window
+CNN{ 3 }.sampling_size = [3, 3];
+
+% configure the stride of sliding window
+CNN{ 3 }.stride = 2;
+
+
+% activation layer
+CNN{ 4 }.type = 'activation';
+
+% configure the activation function
+CNN{ 4 }.activation = activation;
+
+
+% convolution layer
 
 CNN{ 5 }.type = 'convolution';
+
 CNN{ 5 }.weight_filler = weight_filler;
-CNN{ 5 }.weight_std = 0.01;
+
+CNN{ 5 }.weight_filler.std = 0.01;
+
 CNN{ 5 }.weight_learning_rate = 1;
+
 CNN{ 5 }.bias_learning_rate = 2;
-CNN{ 5 }.kernel_size = [ 5 , 5 ];
+
+CNN{ 5 }.kernel_size = [5 ,5];
+
 CNN{ 5 }.expand = true;
+
 CNN{ 5 }.output = 48;
 
+% activation layer
+
 CNN{ 6 }.type = 'activation';
-CNN{ 6 }.activation = 'relu';
+
+CNN{ 6 }.activation = activation;
+
+
+% sampling layer
 
 CNN{ 7 }.type = 'sampling';
+
 CNN{ 7 }.method = 'average';
+
 CNN{ 7 }.sampling_size = [ 3 , 3 ];
+
 CNN{ 7 }.stride = 2;
 
+
+% convolution layer
+
 CNN{ 8 }.type = 'convolution';
+
 CNN{ 8 }.weight_filler = weight_filler;
-CNN{ 8 }.weight_std = 0.01;
+
+CNN{ 8 }.weight_filler.std = 0.01;
+
 CNN{ 8 }.weight_learning_rate = 1;
+
 CNN{ 8 }.bias_learning_rate = 2;
+
 CNN{ 8 }.kernel_size = [ 3 , 3 ];
+
 CNN{ 8 }.expand = true;
+
 CNN{ 8 }.output = 64;
 
+
+% activation layer
+
 CNN{ 9 }.type = 'activation';
+
 CNN{ 9 }.activation = 'relu';
 
+
+% sampling layer
+
 CNN{ 10 }.type = 'sampling';
+
 CNN{ 10 }.method = 'average';
+
 CNN{ 10 }.sampling_size = [ 3 , 3 ];
+
 CNN{ 10 }.stride = 2;
 
+
+% full connection layer
+
 CNN{ 11 }.type = 'full_connection';
+
 CNN{ 11 }.weight_filler = weight_filler;
-CNN{ 11 }.weight_std = 0.1;
+
+CNN{ 11 }.weight_filler.std = 0.1;
+
 CNN{ 11 }.weight_learning_rate = 1;
+
 CNN{ 11 }.bias_learning_rate = 2;
+
 CNN{ 11 }.output = 32;
-CNN{ 11 }.dropout = false;                                      %dropout技术，有待实现。
+
+% the function of dropout is not complete
+CNN{ 11 }.dropout = false;
+
+
+% activation layer
 
 CNN{ 12 }.type = 'activation';
+
 CNN{ 12 }.activation = 'relu';
 
+
+% full connection layer
+
 CNN{ 13 }.type = 'full_connection';
+
 CNN{ 13 }.weight_filler = weight_filler;
-CNN{ 13 }.weight_std = 0.1;
+
+CNN{ 13 }.weight_filler.std = 0.1;
+
 CNN{ 13 }.weight_learning_rate = 1;
+
 CNN{ 13 }.bias_learning_rate = 2;
+
 CNN{ 13 }.output = 10;
 
-CNN{ 14 }.type = 'activation';                                  %类别为激活函数层，输出层可以规约为激活函数层
-CNN{ 14 }.activation = 'softmax';                               %激活函数为softmax函数
 
-%% 开始训练和测试
-CNN = CNN_initialization( CNN );                                %初始化网络
+% output layer
 
-                                                                %进行梯度检验
-% check_size = 5;                                               %参与检验的样本的大小1
-% epsilon = 1e-8;                                               %epsilon
-% tolerance = 1e-7;                                             %梯度检验的容差
+CNN{ 14 }.type = 'activation';
+
+CNN{ 14 }.activation = output_function;
+
+
+
+%% -------------initializaing the CNN-------------------
+
+CNN = CNN_initialization( CNN );
+
+
+%% --------------check the gradient---------------------
+
+% check_size = 5;
+% epsilon = 1e-8;
+% tolerance = 1e-7;
 % CNN_gradient_check( train_input , train_target , CNN , tr_config.cost_function , check_size , epsilon , tolerance );
 
+
+%% -----------------train the CNN-----------------------
 tic;
 CNN = CNN_train( train_input , train_target , validation_input , validation_target , tr_config , CNN );            %训练
+
 train_time = toc;
-clear input
-clear target
+clear train_input
+clear train_target
 
-[accuracy, confusion_matrix] = CNN_test( test_input, test_target, CNN );        %测试，记录错误率以及错误分类样本的索引
-result = { CNN , accuracy , confusion_matrix };                              %输出的结果，以及正确率，以及分类错误索引
+%% ----------------test the CNN------------------------
+[accuracy, confusion_matrix] = CNN_test( test_input, test_target, CNN );
 
 
-%% 以下输出训练日志
+
+%% ------------save the running log and figure---------
+
+% prepare the string with the information of structure
 struct_str = sprintf( 'layer 1   type: input                          width:%i\r\n' , CNN{ 1 }.output );
 for l = 2 : length( CNN )
     if strcmp( CNN{l}.type , 'convolution' )
@@ -184,22 +303,23 @@ for l = 2 : length( CNN )
     end
 end
 
-run_str = sprintf( 'Accuracy %.2f%%   cost %f   time %.1fs   epochs %i   learning rate %.7f   batchsize %i   momentum %.1f   half life %i   activation %s   weight filler %s', ...
-     accuracy*100 , CNN{1}.cost , train_time , CNN{1}.epochs , tr_config.learning_rate , tr_config.batch_size , tr_config.momentum , tr_config.half_life , activation , weight_filler );
+% prepare the string with the information of running result
+run_str = sprintf( 'Accuracy %.2f%%   cost %f   time %.1fs   epochs %i   learning rate %.7f   batchsize %i   momentum %.1f   half life %i   activation %s   weight filler %s', accuracy*100 , CNN{1}.cost , train_time , CNN{1}.epochs , tr_config.learning_rate , tr_config.batch_size , tr_config.momentum , tr_config.half_life , activation , weight_filler.type );
 log_str = sprintf( '%s\r\n%s' , run_str , struct_str );                 
 
-%将程序运行数据输出到日志
-fid = fopen('Log\Log.txt','a');
-fprintf( fid , '%s\r\n\r\n' , log_str );
+% output the string to /Log/Log
+fid = fopen('Log/Log', 'a');
+fprintf(fid, '%s\r\n\r\n', log_str );
 fclose(fid);
 
-title_str = sprintf( 'AC:%.2f%%, cost:%.4f, TIME:%.1fs, EPOCHS:%i, LR:%.7f, BATCHSIZE:%i, %s', ...
-     accuracy*100 , CNN{1}.cost , train_time , CNN{1}.epochs , tr_config.learning_rate , tr_config.batch_size , activation );
-%给函数图像添加文字标题
+% prepare the title string
+title_str = sprintf( 'AC:%.2f%%, cost:%.4f, TIME:%.1fs, EPOCHS:%i, LR:%.7f, BATCHSIZE:%i, %s', accuracy*100 , CNN{1}.cost , train_time , CNN{1}.epochs , tr_config.learning_rate , tr_config.batch_size , activation );
+
+% add title to the figure
 title( title_str );
+
+% configure the y interval of figure
 ylim([0 2.5]);
 
-%将图片按照输出到"Log\image_name.png"
-saveas( gcf , sprintf( '%s%s%s' , 'Log\' , run_str , '.png' ) );
-
-% end
+% output the figure to
+saveas( gcf , sprintf( '%s%s%s' , 'Log/' , run_str , '.png' ) );
