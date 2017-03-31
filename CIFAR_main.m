@@ -1,11 +1,14 @@
 % CIFAR_main.m
 
+clear
+clc
+
 % configure random seed
 rand( 'state' , 0 );
 randn( 'state' , 0 );
 
 % add path
-addpath 'CIFAR_10_dataset'
+addpath 'datasets/CIFAR_10_dataset'
 addpath 'CNN_frame'
 addpath 'CNN_frame/functions'
 addpath 'CNN_frame/constructor'

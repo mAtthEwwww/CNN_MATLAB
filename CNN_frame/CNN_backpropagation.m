@@ -113,7 +113,7 @@ for l = L : -1 : 2
             CNN{l-1}.delta = derived_f( CNN{l-1}.X ) .* CNN{l}.delta;
         else
             for i = 1 : CNN{l-1}.output
-                CNN{l-1}.delta{i} = diff_f( CNN{l-1}.X{i} ) .* CNN{l}.delta{i};
+                CNN{l-1}.delta{i} = derived_f( CNN{l-1}.X{i} ) .* CNN{l}.delta{i};
             end
         end
     end

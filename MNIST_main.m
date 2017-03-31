@@ -1,9 +1,12 @@
 % see more detail in CIFAR_main.m
 
+clear
+clc
+
 rand( 'state' , 0 );
 randn( 'state' , 0 );
 
-addpath 'MNIST_dataset'
+addpath 'datasets/MNIST_dataset'
 addpath 'CNN_frame'
 addpath 'CNN_frame/functions'
 addpath 'CNN_frame/constructor'
