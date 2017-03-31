@@ -1,11 +1,13 @@
 Convolution Neural Network on MATLAB
 
-CIFAR-10 classification example is in CIFAR_main.m
+CIFAR_main.m, an example of the CIFAR-10 image classification
 
-MNIST classification example is in MNIST_main.m
+MNIST_main.m, an example of the MNIST handwritten digits classification
 
-The principle detail is in CNN_for_image_recognition.pdf
+Gravity_main.m, an example of Gravity signal detection
 
 The dataset can be download in
+
     http://yann.lecun.com/exdb/mnist/
+
     http://www.cs.toronto.edu/~kriz/cifar.html
