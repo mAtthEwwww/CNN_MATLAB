@@ -6,7 +6,7 @@ MNIST_main.m, an example of the MNIST handwritten digits classification
 
 Gravity_main.m, an example of Gravity signal detection
 
-The dataset can be download in
+The datasets can be downloaded in
 
     http://yann.lecun.com/exdb/mnist/
 
