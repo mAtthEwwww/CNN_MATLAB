@@ -1,4 +1,6 @@
-% Gravity_main
+% Gravity_main.m
+% CNN for Gravity Wave detectation
+% see more detail in CIFAR_main.m
 
 clear
 clc
