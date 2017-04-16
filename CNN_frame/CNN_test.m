@@ -1,4 +1,4 @@
-function [ accuracy , confusion_matrix ] = CNN_test( input, target, CNN )
+function [ accuracy , confusion_matrix ] = CNN_test( input, target, CNN , batch_size )
 % CNN_test.m
 % calculate the CNN performance on (input, target) set
 %
@@ -13,16 +13,23 @@ function [ accuracy , confusion_matrix ] = CNN_test( input, target, CNN )
 
 
 % extract the number of class
-K = size( target , 2 );
-
-% feedforward with input set
-CNN = CNN_feedforward(input, CNN);
+[N, K] = size(target);
 
 % extract the class labels of target set
 [ ~ , target ] = max(target , [], 2); 
 
-% extract the prediction labels of output
-[ ~ , T_hat ] = max(CNN{length(CNN)}.X, [], 2);
+% construct an empty vector for inference labels
+T_hat = zeros(size(target));
+
+if nargin == 3
+    batch_size = length(target);
+end
+
+for i = 1 : floor(N / batch_size)
+    batch_input = get_mini_batch(input, (i-1) * batch_size + 1 : min(i * batch_size, length(target)));
+    CNN = CNN_feedforward(CNN, batch_input);
+    [~, T_hat((i-1) * batch_size + 1 : min(i * batch_size, length(target)))] = max(CNN{length(CNN)}.X, [], 2);
+end
 
 % calculate the prediction accuracy
 accuracy = mean( target == T_hat );

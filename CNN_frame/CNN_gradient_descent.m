@@ -14,17 +14,26 @@ for l = 2 : length( CNN )
     if strcmp( CNN{l}.type, 'convolution' )
         for j = 1 : CNN{l}.output
             for i = 1 : CNN{l-1}.output
-                CNN{l}.m_grad_kernel{i}{j} = momentum * CNN{l}.m_grad_kernel{i}{j} + learning_rate * CNN{l}.weight_learning_rate * ( CNN{l}.grad_kernel{i}{j} + weight_decay * CNN{l}.kernel{i}{j} );
-		CNN{l}.kernel{i}{j} = CNN{l}.kernel{i}{j} - CNN{l}.m_grad_kernel{i}{j};
+                CNN{l}.weight.momentum{j,i} = momentum * CNN{l}.weight.momentum{j,i} + learning_rate * CNN{l}.weight.learning_rate * (CNN{l}.weight.grad{j,i} + weight_decay * CNN{l}.weight.kernel{j,i});
+                CNN{l}.weight.kernel{j,i} = CNN{l}.weight.kernel{j,i} - CNN{l}.weight.momentum{j,i};
             end
-	    CNN{l}.m_grad_bias{j} = momentum * CNN{l}.m_grad_bias{j} + learning_rate * CNN{l}.bias_learning_rate * CNN{l}.grad_bias{j};
-            CNN{l}.bias{j} = CNN{l}.bias{j} - CNN{l}.bias{j} - CNN{l}.m_grad_bias{j};
+            if CNN{l}.bias.option == true
+	            CNN{l}.bias.momentum{j} = momentum * CNN{l}.bias.momentum{j} + learning_rate * CNN{l}.bias.learning_rate * CNN{l}.bias.grad{j};
+                CNN{l}.bias.b{j} = CNN{l}.bias.b{j} - CNN{l}.bias.momentum{j};
+            end
+        end
+    elseif strcmp(CNN{l}.type, 'batch_normalization')
+        for j = 1 : CNN{l}.output
+            CNN{l}.gamma.momentum{j} = momentum * CNN{l}.gamma.momentum{j} + learning_rate * CNN{l}.gamma.grad{j};% learning rate of gamma or beta is considerable
+            CNN{l}.gamma.g{j} = CNN{l}.gamma.g{j} - CNN{l}.gamma.momentum{j};
+            CNN{l}.beta.momentum{j} = momentum * CNN{l}.beta.momentum{j} + learning_rate * CNN{l}.beta.grad{j};
+            CNN{l}.beta.b{j} = CNN{l}.beta.b{j} - CNN{l}.beta.momentum{j};
         end
     elseif strcmp( CNN{l}.type, 'full_connection' )
-        CNN{l}.m_grad_W = momentum * CNN{l}.m_grad_W + learning_rate * CNN{l}.weight_learning_rate * ( CNN{l}.grad_W + weight_decay * CNN{l}.W );
-        CNN{l}.W = CNN{l}.W - CNN{l}.m_grad_W;
-	CNN{l}.m_grad_bias = momentum * CNN{l}.m_grad_bias + learning_rate * CNN{l}.bias_learning_rate * CNN{l}.grad_bias;
-        CNN{l}.bias = CNN{l}.bias - CNN{l}.m_grad_bias;
+        CNN{l}.weight.momentum = momentum * CNN{l}.weight.momentum + learning_rate * CNN{l}.weight.learning_rate * (CNN{l}.weight.grad + weight_decay * CNN{l}.weight.W );
+        CNN{l}.weight.W = CNN{l}.weight.W - CNN{l}.weight.momentum;
+	    CNN{l}.bias.momentum = momentum * CNN{l}.bias.momentum + learning_rate * CNN{l}.bias.learning_rate * CNN{l}.bias.grad;
+        CNN{l}.bias.b = CNN{l}.bias.b - CNN{l}.bias.momentum;
     end
 end
 

@@ -19,7 +19,8 @@ addpath 'CNN_frame/constructor'
 % Train and test are struct, both of which contain a input set X and a output set T.
 % The input set X is an array of cell (X{1}, X{2}, X{3}), each cell contains a 3-order tensor. Each tensor (height x width x sample-size) presents a color channel (RGB)
 % The output set T is a label matrix, each row is a label vector of a sample (one-hot)
-[ train , test ] = load_cifar( 2 );
+%[ train , test ] = load_cifar( 2 );
+[train, test] = load_cifar_tiny( 2 );
 
 % set the size of validate set
 validation_size = 2000;
@@ -40,6 +41,9 @@ input_size = size( train_input{1}( : , : , 1 ) );
 
 % configure the number of color channel
 input_channel = length( train_input );
+
+% configure the size of a testing batch
+test_batch_size = 2000;
 
 % release memory
 clear train
@@ -110,7 +114,7 @@ CNN{ 2 }.kernel_size = [ 5 , 5 ];
 
 % configure the zero padding
 % when turn on zero padding, make sure the kernel size is odd
-CNN{ 2 }.expand = true;
+CNN{ 2 }.zero_padding.option = true;
 
 % configure the relative learning rate of the weight (kernel)
 CNN{ 2 }.weight_learning_rate = 1;
@@ -120,6 +124,12 @@ CNN{ 2 }.bias_learning_rate = 2;
 
 % configure the number of channel
 CNN{ 2 }.output = 32;
+
+% configure the batch normalization
+CNN{ 2 }.batch_normalization.option = false;
+
+% configure the moving average decay rate of batch normalization
+%CNN{ 2 }.batch_normalization.decay = 0.95;
 
 
 % sampling layer
@@ -157,9 +167,13 @@ CNN{ 5 }.bias_learning_rate = 2;
 
 CNN{ 5 }.kernel_size = [5 ,5];
 
-CNN{ 5 }.expand = true;
+CNN{ 5 }.zero_padding.option = true;
 
 CNN{ 5 }.output = 48;
+
+CNN{ 5 }.batch_normalization.option = false;
+
+%CNN{ 5 }.batch_normalization.decay = 0.95;
 
 % activation layer
 
@@ -193,9 +207,13 @@ CNN{ 8 }.bias_learning_rate = 2;
 
 CNN{ 8 }.kernel_size = [ 3 , 3 ];
 
-CNN{ 8 }.expand = true;
+CNN{ 8 }.zero_padding.option = true;
 
 CNN{ 8 }.output = 64;
+
+CNN{ 8 }.batch_normalization.option = false;
+
+%CNN{ 8 }.batch_normalization.decay = 0.95;
 
 
 % activation layer
@@ -230,8 +248,9 @@ CNN{ 11 }.bias_learning_rate = 2;
 
 CNN{ 11 }.output = 32;
 
-% the function of dropout is not complete
-CNN{ 11 }.dropout = false;
+CNN{ 11 }.dropout.option = true;
+
+CNN{ 11 }.dropout.rate = 0.5;
 
 
 % activation layer
@@ -253,7 +272,10 @@ CNN{ 13 }.weight_learning_rate = 1;
 
 CNN{ 13 }.bias_learning_rate = 2;
 
+CNN{ 13 }. dropout.option = false;
+
 CNN{ 13 }.output = 10;
+
 
 
 % output layer
@@ -279,14 +301,14 @@ CNN = CNN_initialization( CNN );
 
 %% -----------------train the CNN-----------------------
 tic;
-CNN = CNN_train( train_input , train_target , validation_input , validation_target , tr_config , CNN );            %ÑµÁ·
+CNN = CNN_train( train_input , train_target , validation_input , validation_target , tr_config , CNN );
 
 train_time = toc;
 clear train_input
 clear train_target
 
 %% ----------------test the CNN------------------------
-[accuracy, confusion_matrix] = CNN_test( test_input, test_target, CNN );
+[accuracy, confusion_matrix] = CNN_test( test_input, test_target, CNN, test_batch_size);
 
 
 

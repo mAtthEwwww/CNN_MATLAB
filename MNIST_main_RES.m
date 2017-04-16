@@ -45,45 +45,37 @@ CNN{ l }.map_size = input_size;
 CNN{ l }.output = input_channel;
 
 l = l + 1;
-CNN{ l }.type = 'convolution';
-CNN{ l }.weight.shape = [5, 5];
+CNN{ l }.type = 'residual_block';
 CNN{ l }.weight.filler = weight_filler;
 CNN{ l }.weight.learning_rate = 1;
-CNN{ l }.bias.option = false;
-%CNN{ l }.bias.learning_rate = 2;
-CNN{ l }.zero_padding.option = false;
-CNN{ l }.output = 20;
-CNN{ l }.bottom = '';
-
-l = l + 1;
-CNN{ l }.type = 'batch_normalization';
 CNN{ l }.BN_decay = 0.99;
+CNN{ l }.down_sampling.option = true;
+CNN{ l }.output = 20;
 
 l = l + 1;
-CNN{ l }.type = 'sampling';
-CNN{ l }.sampling.method = 'max';
-CNN{ l }.sampling.shape = [2, 2];
-CNN{ l }.sampling.stride = [2, 2];
-
-l = l + 1;
-CNN{ l }.type = 'convolution';
-CNN{ l }.weight.shape = [5, 5];
+CNN{ l }.type = 'residual_block';
 CNN{ l }.weight.filler = weight_filler;
 CNN{ l }.weight.learning_rate = 1;
-CNN{ l }.bias.option = false;
-%CNN{ l }.bias.learning_rate = 2;
-CNN{ l }.zero_padding.option = true;
+CNN{ l }.BN_decay = 0.99;
+CNN{ l }.down_sampling.option = true;
+CNN{ l }.output = 30;
+
+l = l + 1;
+CNN{ l }.type = 'residual_block';
+CNN{ l }.weight.filler = weight_filler;
+CNN{ l }.weight.learning_rate = 1;
+CNN{ l }.BN_decay = 0.99;
+CNN{ l }.down_sampling.option = true;
 CNN{ l }.output = 40;
 
 l = l + 1;
-CNN{ l }.type = 'batch_normalization';
+CNN{ l }.type = 'residual_block';
+CNN{ l }.weight.filler = weight_filler;
+CNN{ l }.weight.learning_rate = 1;
 CNN{ l }.BN_decay = 0.99;
+CNN{ l }.down_sampling.option = true;
+CNN{ l }.output = 60;
 
-l = l + 1;
-CNN{ l }.type = 'sampling';
-CNN{ l }.sampling.method = 'max';
-CNN{ l }.sampling.shape = [2, 2];
-CNN{ l }.sampling.stride = [2, 2];
 
 l = l + 1;
 CNN{ l }.type = 'full_connection';
@@ -151,3 +143,4 @@ ylim([0 2.5]);
 
 % output the figure
 saveas( gcf , sprintf( '%s%s%s' , 'Log/' , run_str , '.png' ) );
+% see more detail in CIFAR_main.m

@@ -97,7 +97,7 @@ while epochs < max_epochs && go_on
         end
 
         % feedforward with input set of the mini-batch 
-        CNN = CNN_feedforward(batch_input, CNN);
+        CNN = CNN_feedforward(CNN, batch_input, true);
 
         % backpropagation with the target set of the mini-batch
         % and calculate the gradient

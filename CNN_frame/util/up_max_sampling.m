@@ -13,7 +13,10 @@ for r = 1 : rows
         for n = 1 : N
             position( x(n) , y(n) , n ) = 1;
         end
-        Y( (r-1)*stride+1 : (r-1)*stride+sampling_size(1) , (c-1)*stride+1 : (c-1)*stride+sampling_size(2) , : ) = Y( (r-1)*stride+1 : (r-1)*stride+sampling_size(1) , (c-1)*stride+1 : (c-1)*stride+sampling_size(2) , : ) + bsxfun( @times , delta( r , c , : ) , position );
+        Y( (r-1)*stride(1)+1 : (r-1)*stride(1)+sampling_size(1) , (c-1)*stride(2)+1 : (c-1)*stride(2)+sampling_size(2) , : ) = Y( (r-1)*stride(2)+1 : (r-1)*stride(2)+sampling_size(1) , (c-1)*stride+1 : (c-1)*stride+sampling_size(2) , : ) + bsxfun( @times , delta( r , c , : ) , position );
+
+%        Y( (r-1)*stride+1 : (r-1)*stride+sampling_size(1) , (c-1)*stride+1 : (c-1)*stride+sampling_size(2) , : ) = Y( (r-1)*stride+1 : (r-1)*stride+sampling_size(1) , (c-1)*stride+1 : (c-1)*stride+sampling_size(2) , : ) + bsxfun( @times , delta( r , c , : ) , position );
+
     end
 end
 

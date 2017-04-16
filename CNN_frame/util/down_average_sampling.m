@@ -17,7 +17,9 @@ k = 0;
 for r = 1 : sampling_size(1)
     for c = 1 : sampling_size(2)
         k = k + 1;
-        sample( : , k , : ) = reshape( X( r : stride : end-sampling_size(1)+r , c : stride : end-sampling_size(2)+c , : ) , s , 1 , N );
+        sample( : , k , : ) = reshape( X( r : stride(1) : end-sampling_size(1)+r , c : stride(2) : end-sampling_size(2)+c , : ) , s , 1 , N );
+
+%        sample( : , k , : ) = reshape( X( r : stride : end-sampling_size(1)+r , c : stride : end-sampling_size(2)+c , : ) , s , 1 , N );
     end
 end
 
