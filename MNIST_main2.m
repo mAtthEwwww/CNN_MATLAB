@@ -22,7 +22,7 @@ validation_size = 1000;
 clear train
 clear test
 
-tr_config.learning_rate = 0.1;
+tr_config.learning_rate = 0.2;
 tr_config.half_life = 4;
 tr_config.momentum = 0;
 tr_config.weight_decay = 0.0001;
@@ -42,37 +42,73 @@ CNN{ l }.map_size = input_size;
 CNN{ l }.output = input_channel;
 
 l = l + 1;
-CNN{ l }.type = 'residual_block';
+CNN{ l }.type = 'convolution';
+CNN{ l }.weight.shape = [5, 5];
 CNN{ l }.weight.filler.type = 'xavier';
 CNN{ l }.weight.learning_rate = 1;
-CNN{ l }.BN_decay = 0.99;
-CNN{ l }.sampling.option = true;
-CNN{ l }.sampling.type = 'max';
-CNN{ l }.sampling.shape = [2, 2];
-CNN{ l }.sampling.stride = [2, 2];
+CNN{ l }.bias.option = false;
+%CNN{ l }.bias.learning_rate = 2;
+CNN{ l }.zero_padding.option = true;
 CNN{ l }.output = 10;
+CNN{ l }.bottom = '';
 
 l = l + 1;
-CNN{ l }.type = 'residual_block';
-CNN{ l }.weight.filler.type = 'xavier';
-CNN{ l }.weight.learning_rate = 1;
-CNN{ l }.BN_decay = 0.99;
-CNN{ l }.sampling.option = true;
+CNN{ l }.type = 'sampling';
 CNN{ l }.sampling.type = 'max';
 CNN{ l }.sampling.shape = [2, 2];
 CNN{ l }.sampling.stride = [2, 2];
+
+l = l + 1;
+CNN{ l }.type = 'batch_normalization';
+CNN{ l }.BN_decay = 0.99;
+
+%l = l + 1;
+%CNN{ l }.type = 'activation';
+%CNN{ l }.activation = 'relu';
+
+l = l + 1;
+CNN{ l }.type = 'convolution';
+CNN{ l }.weight.shape = [5, 5];
+CNN{ l }.weight.filler.type = 'xavier';
+CNN{ l }.weight.learning_rate = 1;
+CNN{ l }.bias.option = false;
+%CNN{ l }.bias.learning_rate = 2;
+CNN{ l }.zero_padding.option = true;
 CNN{ l }.output = 20;
 
 l = l + 1;
-CNN{ l }.type = 'residual_block';
-CNN{ l }.weight.filler.type = 'xavier';
-CNN{ l }.weight.learning_rate = 1;
-CNN{ l }.BN_decay = 0.99;
-CNN{ l }.sampling.option = true;
+CNN{ l }.type = 'sampling';
 CNN{ l }.sampling.type = 'max';
 CNN{ l }.sampling.shape = [2, 2];
 CNN{ l }.sampling.stride = [2, 2];
-CNN{ l }.output = 40;
+
+l = l + 1;
+CNN{ l }.type = 'batch_normalization';
+CNN{ l }.BN_decay = 0.99;
+
+l = l + 1;
+CNN{ l }.type = 'activation';
+CNN{ l }.activation = 'relu';
+
+l = l + 1;
+CNN{ l }.type = 'convolution';
+CNN{ l }.weight.shape = [5, 5];
+CNN{ l }.weight.filler.type = 'xavier';
+CNN{ l }.weight.learning_rate = 1;
+CNN{ l }.bias.option = false;
+%CNN{ l }.bias.learning_rate = 2;
+CNN{ l }.zero_padding.option = true;
+CNN{ l }.output = 30;
+
+l = l + 1;
+CNN{ l }.type = 'sampling';
+CNN{ l }.sampling.type = 'max';
+CNN{ l }.sampling.shape = [2, 2];
+CNN{ l }.sampling.stride = [2, 2];
+
+l = l + 1;
+CNN{ l }.type = 'batch_normalization';
+CNN{ l }.BN_decay = 0.99;
 
 l = l + 1;
 CNN{ l }.type = 'full_connection';
@@ -81,7 +117,7 @@ CNN{ l }.weight.learning_rate = 1;
 CNN{ l }.bias.learning_rate = 2;
 CNN{ l }.dropout.option = true;
 CNN{ l }.dropout.rate = 0.5;
-CNN{ l }.output = 200;
+CNN{ l }.output = 100;
 
 l = l + 1;
 CNN{ l }.type = 'activation';
@@ -117,7 +153,7 @@ for l = 2 : length( CNN )
     if strcmp( CNN{l}.type , 'convolution' )
         struct_str = sprintf( '%slayer %i   type: convolution    kernel size: %ix%i   width: %i\r\n', struct_str, l, CNN{l}.weight.shape(1), CNN{l}.weight.shape(2), CNN{l}.output);
     elseif strcmp( CNN{l}.type , 'sampling' )
-        struct_str = sprintf( '%slayer %i   type: sampling     stride: %ix%i   sampling size: %ix%i   method: %s\r\n', struct_str, l, CNN{l}.sampling.stride(1), CNN{l}.sampling.stride(2), CNN{l}.sampling.shape(1), CNN{l}.sampling.shape(2), CNN{ l }.sampling.method);
+        struct_str = sprintf( '%slayer %i   type: sampling     stride: %ix%i   sampling size: %ix%i   sampling type: %s\r\n', struct_str, l, CNN{l}.sampling.stride(1), CNN{l}.sampling.stride(2), CNN{l}.sampling.shape(1), CNN{l}.sampling.shape(2), CNN{ l }.sampling.type);
     elseif strcmp( CNN{l}.type , 'full_connection' )
         struct_str = sprintf( '%slayer %i   type: full_connection                width: %i\r\n' , struct_str , l , CNN{ l }.output );
     elseif strcmp( CNN{l}.type, 'activation' )
@@ -140,4 +176,3 @@ ylim([0 2.5]);
 
 % output the figure
 saveas( gcf , sprintf( '%s%s%s' , 'Log/' , run_str , '.png' ) );
-% see more detail in CIFAR_main.m

@@ -17,8 +17,8 @@ for l = length(layer.block) : -1 : 2
 
     elseif strcmp(layer.block{l}.type, 'residual')
         layer.block{l-1}.delta = layer.block{l}.delta;
-        if layer.down_sampling.option == true
-            smp = layer.block{layer.down_sampling.layer};
+        if layer.sampling.option == true
+            smp = layer.block{layer.sampling.layer};
             smp.delta = layer.block{l}.delta;
             pre_delta_res = SMP_backpropagation(smp, size(pre_X{1}(:,:,1)));
         else

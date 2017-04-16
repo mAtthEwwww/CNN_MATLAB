@@ -24,8 +24,8 @@ for l = 2 : length(layer.block)
         layer.block{l} = ACT_feedforward(layer.block{l}, layer.block{l-1}.X);
 
     elseif strcmp(layer.block{l}.type, 'residual')
-        if layer.down_sampling.option == true
-            smp = SMP_feedforward(layer.block{layer.down_sampling.layer}, X);
+        if layer.sampling.option == true
+            smp = SMP_feedforward(layer.block{layer.sampling.layer}, X);
             layer.block{l} = RES_feedforward(layer.block{l}, layer.block{l-1}.X, smp.X);
         else
             layer.block{l} = RES_feedforward(layer.block{l}, layer.block{l-1}.X, smp.X);

@@ -2,7 +2,7 @@ function pre_delta = SMP_backpropagation( layer, pre_map_size )
 
 pre_delta = cell(length(layer.delta), 1);
 
-if strcmp( layer.sampling.method, 'max' )
+if strcmp( layer.sampling.type, 'max' )
 
     for j = 1 : length(layer.delta)
 
@@ -10,7 +10,7 @@ if strcmp( layer.sampling.method, 'max' )
 
     end
 
-elseif strcmp( layer.sampling.method, 'average' )
+elseif strcmp( layer.sampling.type, 'average' )
 
     for j = 1 : length(layer.delta)
 
@@ -18,7 +18,7 @@ elseif strcmp( layer.sampling.method, 'average' )
 
     end
 
-elseif strcmp(layer.sampling.method, 'grid')
+elseif strcmp(layer.sampling.type, 'grid')
     
     for j = 1 : length(layer.delta)
         
@@ -28,7 +28,7 @@ elseif strcmp(layer.sampling.method, 'grid')
 
 else
 
-    error('sampling method wrong')
+    error('sampling type wrong')
 
 end
 

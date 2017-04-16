@@ -34,9 +34,6 @@ tr_config.threshold = 0.002;
 
 input_size = size(train_input{1}(:, :, 1));
 input_channel = length(train_input);
-weight_filler.type = 'xavier';
-activation = 'relu';
-output_function = 'softmax';
 test_batch_size = 1000;
 
 
@@ -47,7 +44,7 @@ CNN{ l }.output = input_channel;
 l = l + 1;
 CNN{ l }.type = 'convolution';
 CNN{ l }.weight.shape = [5, 5];
-CNN{ l }.weight.filler = weight_filler;
+CNN{ l }.weight.filler.type = 'xavier';
 CNN{ l }.weight.learning_rate = 1;
 CNN{ l }.bias.option = false;
 %CNN{ l }.bias.learning_rate = 2;
@@ -61,14 +58,14 @@ CNN{ l }.BN_decay = 0.99;
 
 l = l + 1;
 CNN{ l }.type = 'sampling';
-CNN{ l }.sampling.method = 'max';
+CNN{ l }.sampling.type = 'max';
 CNN{ l }.sampling.shape = [2, 2];
 CNN{ l }.sampling.stride = [2, 2];
 
 l = l + 1;
 CNN{ l }.type = 'convolution';
 CNN{ l }.weight.shape = [5, 5];
-CNN{ l }.weight.filler = weight_filler;
+CNN{ l }.weight.filler.type = 'xavier';
 CNN{ l }.weight.learning_rate = 1;
 CNN{ l }.bias.option = false;
 %CNN{ l }.bias.learning_rate = 2;
@@ -81,13 +78,13 @@ CNN{ l }.BN_decay = 0.99;
 
 l = l + 1;
 CNN{ l }.type = 'sampling';
-CNN{ l }.sampling.method = 'max';
+CNN{ l }.sampling.type = 'max';
 CNN{ l }.sampling.shape = [2, 2];
 CNN{ l }.sampling.stride = [2, 2];
 
 l = l + 1;
 CNN{ l }.type = 'full_connection';
-CNN{ l }.weight.filler = weight_filler;
+CNN{ l }.weight.filler.type = 'xavier';
 CNN{ l }.weight.learning_rate = 1;
 CNN{ l }.bias.learning_rate = 2;
 CNN{ l }.dropout.option = true;
@@ -96,11 +93,11 @@ CNN{ l }.output = 200;
 
 l = l + 1;
 CNN{ l }.type = 'activation';
-CNN{ l }.activation = activation;
+CNN{ l }.activation = 'relu';
 
 l = l + 1;
 CNN{ l }.type = 'full_connection';
-CNN{ l }.weight.filler = weight_filler;
+CNN{ l }.weight.filler.type = 'xavier';
 CNN{ l }.weight.learning_rate = 1;
 CNN{ l }.bias.learning_rate = 2;
 CNN{ l }.dropout.option= false;
@@ -108,7 +105,7 @@ CNN{ l }.output = 10;
 
 l = l + 1;
 CNN{ l }.type = 'activation';
-CNN{ l }.activation = output_function;
+CNN{ l }.activation = 'softmax';
 
 CNN = CNN_initialization( CNN );
 
@@ -128,7 +125,7 @@ for l = 2 : length( CNN )
     if strcmp( CNN{l}.type , 'convolution' )
         struct_str = sprintf( '%slayer %i   type: convolution    kernel size: %ix%i   width: %i\r\n', struct_str, l, CNN{l}.weight.shape(1), CNN{l}.weight.shape(2), CNN{l}.output);
     elseif strcmp( CNN{l}.type , 'sampling' )
-        struct_str = sprintf( '%slayer %i   type: sampling     stride: %ix%i   sampling size: %ix%i   method: %s\r\n', struct_str, l, CNN{l}.sampling.stride(1), CNN{l}.sampling.stride(2), CNN{l}.sampling.shape(1), CNN{l}.sampling.shape(2), CNN{ l }.sampling.method);
+        struct_str = sprintf( '%slayer %i   type: sampling     stride: %ix%i   sampling size: %ix%i   sampling type: %s\r\n', struct_str, l, CNN{l}.sampling.stride(1), CNN{l}.sampling.stride(2), CNN{l}.sampling.shape(1), CNN{l}.sampling.shape(2), CNN{ l }.sampling.type);
     elseif strcmp( CNN{l}.type , 'full_connection' )
         struct_str = sprintf( '%slayer %i   type: full_connection                width: %i\r\n' , struct_str , l , CNN{ l }.output );
     elseif strcmp( CNN{l}.type, 'activation' )

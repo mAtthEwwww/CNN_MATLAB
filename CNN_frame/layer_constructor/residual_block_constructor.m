@@ -9,12 +9,11 @@ block{l}.output = layer.output;
 block{l}.zero_padding.option = true;
 block{l} = convolution_constructor(block{1}, input, input_map_size);
 
-if layer.down_sampling.option == true
+if layer.sampling.option == true
     l = l + 1;
-    layer.down_sampling.layer = l;
+    layer.sampling.layer = l;
     block{l}.type = 'sampling';
-    block{l}.sampling.method = 'grid';
-    block{l}.sampling.shape = [2, 2];
+    block{l}.sampling = layer.sampling;
     block{l} = sampling_constructor(block{l}, block{l-1}.output, block{l-1}.map_size);
 end
 

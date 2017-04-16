@@ -1,6 +1,6 @@
 function layer = SMP_feedforward( layer , X )
 
-if strcmp(layer.sampling.method, 'max')
+if strcmp(layer.sampling.type, 'max')
 
     for j = 1 : length(X)
         
@@ -8,7 +8,7 @@ if strcmp(layer.sampling.method, 'max')
 
     end
 
-elseif strcmp(layer.sampling.method, 'average')
+elseif strcmp(layer.sampling.type, 'average')
     
     for j = 1 : length(X)
         
@@ -16,7 +16,7 @@ elseif strcmp(layer.sampling.method, 'average')
     
     end
 
-elseif strcmp(layer.sampling.method, 'grid')
+elseif strcmp(layer.sampling.type, 'grid')
 
     for j = 1 : length(X)
         
@@ -26,7 +26,7 @@ elseif strcmp(layer.sampling.method, 'grid')
 
 else
 
-    error('sampling method wrong')
+    error('sampling type wrong')
 
 end
 
