@@ -22,7 +22,7 @@ validation_size = 1000;
 clear train
 clear test
 
-tr_config.learning_rate = 0.1;
+tr_config.learning_rate = 0.05;
 tr_config.half_life = 5;
 tr_config.momentum = 0;
 tr_config.weight_decay = 0.0001;

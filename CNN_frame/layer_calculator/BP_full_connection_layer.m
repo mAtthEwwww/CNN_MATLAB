@@ -1,4 +1,6 @@
-function [layer, pre_delta] = FC_backpropagation( layer , pre_X , pre_isTensor ) 
+function [layer, pre_delta] = BP_full_connection_layer( layer , pre_X , pre_isTensor ) 
+
+%[N, ~] = size(layer.delta);
 
 if layer.dropout.option == true
     

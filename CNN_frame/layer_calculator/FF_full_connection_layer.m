@@ -1,6 +1,6 @@
-function layer = FC_feedforward( layer , X , isTensor , isTrain )
+function layer = FF_full_connection_layer( layer , X , pre_isTensor, isTrain )
 
-if isTensor == true
+if pre_isTensor == true
 
     [R, C, N] = size(X{1});
 
@@ -13,7 +13,6 @@ if isTensor == true
     end
 
     layer.X = bsxfun(@plus, layer.pre_X * layer.weight.W', layer.bias.b);
-
 
 else
     
@@ -35,5 +34,7 @@ if layer.dropout.option == true
         layer.X = layer.X * (1 - layer.dropout.rate);
 
     end
+
+end
 
 end

@@ -1,93 +1,132 @@
 function CNN_gradient_check( input , target , CNN , cost_function , check_size , epsilon , tolerance )
 
-cost_function = str2func( cost_function );
+cost_function = str2func(cost_function);
 
-[ ~ , ~ , N ] = size( input{ 1 } );
+[~, ~, N] = size(input{1});
 
 disorder = randperm( N );
 
 [ input, target ] = get_mini_batch( input, target, disorder( 1 : check_size ) );
 
-CNN = CNN_feedforward( input , CNN );
+CNN = CNN_feedforward(CNN, input, true);
 
-CNN = CNN_backprogagation( target , CNN );
+CNN = CNN_backpropagation(CNN, target);
 
 L = length( CNN );
 
 for l = L : -1 : 2
-    disp( l )
+    fprintf('checking layer: %d, type: %s\n', l, CNN{l}.type)
     if strcmp( CNN{l}.type, 'convolution' )
         for j = 1 : CNN{l}.output
             for i = 1 : CNN{l-1}.output
-                for r = 1 : CNN{l}.kernel_size(1)
-                    for c = 1 : CNN{l}.kernel_size(2)
+                for r = 1 : CNN{l}.weight.shape(1)
+                    for c = 1 : CNN{l}.weight.shape(2)
                         check = CNN;
-                        check{l}.kernel{i}{j}( r, c ) = CNN{l}.kernel{i}{j}( r, c ) - epsilon;
-                        check = CNN_feedforward( input, check );
-                        left = cost_function( check{L}.X, target );
-                        check{l}.kernel{i}{j}( r, c ) = CNN{l}.kernel{i}{j}( r, c ) + epsilon;
-                        check = CNN_feedforward( input, check );
+                        check{l}.weight.kernel{j,i}( r, c ) = CNN{l}.weight.kernel{j,i}( r, c ) - epsilon;
+                        check = CNN_feedforward(check, input, true);
+                        left = cost_function(check{L}.X, target);
+                        check{l}.weight.kernel{j,i}( r, c ) = CNN{l}.weight.kernel{j,i}( r, c ) + epsilon;
+                        check = CNN_feedforward(check, input, true);
                         right = cost_function( check{L}.X, target );
-                        numecal_grad_kernel = ( right - left ) / ( 2 * epsilon );
-                        if abs( numecal_grad_kernel - CNN{l}.grad_kernel{i}{j}( r, c ) ) > tolerance
-                            disp(numecal_grad_kernel)
-                            disp(CNN{l}.grad_kernel{i}{j}( r , c ))
-                            disp(['convolution kernel fail: ' , num2str(l) , '²ã ' , num2str(j) , 'map ' , num2str(i) , 'inputmap ' , num2str(r) , 'ÐÐ ' , num2str(c) , 'ÁÐ' ])
+                        numerical_grad_kernel = ( right - left ) / ( 2 * epsilon );
+                        if abs(numerical_grad_kernel - CNN{l}.weight.grad{j,i}( r, c ) ) > tolerance
+                            fprintf('gradient check fail at convolution layer: %d, kernel: (%d, %d), row: %d, column: %d\n', l, j, i, r, c) 
+                            fprintf('numerical:  %.18f\n', numerical_grad_kernel)
+                            fprintf('calculated: %.18f\n', (CNN{l}.weight.grad{j,i}( r , c )))
                         end
                     end
                 end
             end
+        end
+
+        if CNN{l}.bias.option == true
+            for j = 1 : CNN{l}.output
+                check = CNN;
+                check{l}.bias.b{j} = CNN{l}.bias.b{j} - epsilon;
+                check = CNN_feedforward(check, input, true);
+                left = cost_function( check{L}.X, target );
+                check{l}.bias.b{j} = CNN{l}.bias.b{j} + epsilon;
+                check = CNN_feedforward(check, input, true);
+                right = cost_function( check{L}.X, target );
+                numerical_grad_bias = ( right - left ) / ( 2 * epsilon );
+                if abs( numerical_grad_bias - CNN{l}.bias.grad{j} ) > tolerance
+                    fprintf('gradient check fail at convolution layer: %d, bias: %d\n', l, j)
+                    fprintf('numerical:  %.18f\n', numerical_grad_bias)
+                    fprintf('calculated: %.18f\n', CNN{l}.bias.grad{j})
+               end
+            end
+        end
+    
+    elseif strcmp(CNN{l}.type, 'batch_normalization')
+        for j = 1 : CNN{l}.output
             check = CNN;
-            check{l}.bias{j} = CNN{l}.bias{j} - epsilon;
-            check = CNN_feedforward( input, check );
-            left = cost_function( check{L}.X, target );
-            check{l}.bias{j} = CNN{l}.bias{j} + epsilon;
-            check = CNN_feedforward( input, check );
-            right = cost_function( check{L}.X, target );
-            numecal_grad_bias = ( right - left ) / ( 2 * epsilon );
-            if abs( numecal_grad_bias - CNN{l}.grad_bias{j} ) > tolerance
-                disp(numecal_grad_bias)
-                disp(CNN{l}.grad_bias{j})
-                disp(['convolution bias fail: ' , num2str(l) , '²ã ' , num2str(j) , 'map '])
+            check{l}.gamma.g{j} = CNN{l}.gamma.g{j} - epsilon;
+            check = CNN_feedforward(check, input, true);
+            left = cost_function(check{L}.X, target);
+            check{l}.gamma.g{j} = CNN{l}.gamma.g{j} + epsilon;
+            check = CNN_feedforward(check, input, true);
+            right = cost_function(check{L}.X, target);
+            numerical_grad = (right - left) / (2 * epsilon);
+            if abs(numerical_grad - CNN{l}.gamma.grad{j}) > tolerance
+                fprintf('gradient check fail at batch normalization layer: %d, gamma: %d\n', l, j)
+                fprintf('numerical:  %.18f\n', numerical_grad)
+                fprintf('calculated: %.18f\n', CNN{l}.gamma.grad{j})
+            end
+        end
+        
+        for j = 1 : CNN{l}.output
+            check = CNN;
+            check{l}.beta.b{j} = CNN{l}.beta.b{j} - epsilon;
+            check = CNN_feedforward(check, input, true);
+            left = cost_function(check{L}.X, target);
+            check{l}.beta.b{j} = CNN{l}.beta.b{j} + epsilon;
+            check = CNN_feedforward(check, input, true);
+            right = cost_function(check{L}.X, target);
+            numerical_grad = (right - left) / (2 * epsilon);
+            if abs(numerical_grad - CNN{l}.beta.grad{j}) > tolerance
+                fprintf('gradient check fail at batch normalization layer: %d, beta: %d\n', l, j)
+                fprintf('numerical:  %.18f\n', numerical_grad)
+                fprintf('calculated: %.18f\n', CNN{l}.beta.grad{j})
             end
         end
         
     elseif strcmp( CNN{l}.type, 'full_connection' )
-        if CNN{l-1}.vector == true
-            R = CNN{l-1}.output;
+        if CNN{l-1}.isTensor == true
+            fan_in = CNN{l-1}.output * prod( CNN{l-1}.map_size );
         else
-            R = CNN{l-1}.output * prod( CNN{l-1}.map_size );
+            fan_in = CNN{l-1}.output;
         end
-        for r = 1 : R
-            for c = 1 : CNN{l}.output
+
+        for r = 1 : CNN{l}.output
+            for c = 1 : fan_in
                 check = CNN;
-                check{l}.W( r, c ) = CNN{l}.W( r, c ) - epsilon;
-                check = CNN_feedforward( input, check );
+                check{l}.weight.W( r, c ) = CNN{l}.weight.W( r, c ) - epsilon;
+                check = CNN_feedforward(check, input, true);
                 left = cost_function( check{L}.X, target );
-                check{l}.W( r, c ) = CNN{l}.W( r, c ) + epsilon;
-                check = CNN_feedforward( input, check );
+                check{l}.weight.W( r, c ) = CNN{l}.weight.W( r, c ) + epsilon;
+                check = CNN_feedforward(check, input, true);
                 right = cost_function( check{L}.X, target );
-                numecal_grad_W = ( right - left ) / ( 2 * epsilon );
-                if abs( numecal_grad_W - CNN{l}.grad_W( r, c ) ) > tolerance
-                    disp(numecal_grad_W)
-                    disp(CNN{l}.grad_W( r, c ))
-                    disp(['full weight fail: ' , num2str(l) , '²ã ' , num2str(r), 'c' , num2str(c) , 'c' ])
+                numerical_grad_W = ( right - left ) / ( 2 * epsilon );
+                if abs( numerical_grad_W - CNN{l}.weight.grad( r, c ) ) > tolerance
+                    fprintf('gradient check fail at full connection layer: %d, weight: (%d, %d)\n', l, r, c)
+                    fprintf('numerical:  %.18f\n', numerical_grad_W)
+                    fprintf('calculated: %.18f\n', CNN{l}.weight.grad( r, c ))
                 end
             end
         end
         for c = 1 : CNN{l}.output
             check = CNN;
-            check{l}.bias( 1, c ) = CNN{l}.bias( 1, c ) - epsilon;
-            check = CNN_feedforward( input, check );
+            check{l}.bias.b(1, c) = CNN{l}.bias.b(1, c) - epsilon;
+            check = CNN_feedforward(check, input, true);
             left = cost_function( check{L}.X, target );
-            check{l}.bias( 1, c ) = CNN{l}.bias( 1, c ) + epsilon;
-            check = CNN_feedforward( input, check );
+            check{l}.bias.b(1, c) = CNN{l}.bias.b(1, c) + epsilon;
+            check = CNN_feedforward(check, input, true);
             right = cost_function( check{L}.X, target );
-            numecal_grad_bias = ( right - left ) / ( 2 * epsilon );
-            if abs( numecal_grad_bias - CNN{l}.grad_bias( 1, c ) ) > tolerance
-                disp(numecal_grad_bias)
-                disp(CNN{l}.grad_bias( 1, c ))
-                disp(['full bias fail: ' , num2str(l) , '²ã ', num2str(c) , 'c' ])
+            numerical_grad_bias = ( right - left ) / ( 2 * epsilon );
+            if abs( numerical_grad_bias - CNN{l}.bias.grad(1, c) ) > tolerance
+                fprintf('gradient check fail at full connection layer: %d, bias: %d\n', l, c)
+                fprintf('numerical:  %.18f\n', numerical_grad_bias)
+                fprintf('calculated: %.18f\n', CNN{l}.bias.grad(1, c))
             end
         end
     end

@@ -1,4 +1,4 @@
-function CNN = CNN_backpropagation( target , CNN )
+function CNN = CNN_backpropagation( CNN , target )
 % CNN_backpropagation.m
 % backpropagation with target
 %
@@ -10,39 +10,36 @@ function CNN = CNN_backpropagation( target , CNN )
 %       CNN  is a array of cell
 
 
-% extract the sample size
-[ ~, ~, N ] = size(CNN{1}.X{1});
+% extract the number of sample
+[N, ~] = size(target);
 
 % extract the number of layer
-L = length( CNN );
+L = length(CNN);
 
 % calculate the delta of the final layer
 CNN{L}.delta = (CNN{L}.X - target) / N;
 
 % calculate the delta from back to front, layer by layer
 for l = L : -1 : 2
-    % if layer l is convolution layer, do the transpose convolution (or deconvolution)
+    % judge the type of layer l
     if strcmp(CNN{l}.type, 'convolution')
-        [CNN{l}, CNN{l-1}.delta] = CN_backpropagation(CNN{l}, CNN{l-1}.X);
+        % call the back propagation function accordingly
+        [CNN{l}, CNN{l-1}.delta] = BP_convolution_layer(CNN{l}, CNN{l-1}.X);
 
     elseif strcmp(CNN{l}.type, 'residual_block')
-        [CNN{l}, CNN{l-1}.delta] = RESBLK_backpropagation(CNN{l}, CNN{l-1}.X);%%%%%%%%
+        [CNN{l}, CNN{l-1}.delta] = BP_residual_block(CNN{l}, CNN{l-1}.X);
 
     elseif strcmp(CNN{l}.type, 'batch_normalization')
-        [CNN{l}, CNN{l-1}.delta] = BN_backpropagation(CNN{l});
+        [CNN{l}, CNN{l-1}.delta] = BP_batch_normalization_layer(CNN{l});
 
-    % if layer l is sampling layer, do the up sampling
     elseif strcmp( CNN{l}.type, 'sampling' )
-        CNN{l-1}.delta = SMP_backpropagation(CNN{l}, CNN{l-1}.map_size);
+        CNN{l-1}.delta = BP_sampling_layer(CNN{l}, CNN{l-1}.map_size);
 
-    % if layer l is full connection layer
     elseif strcmp(CNN{l}.type, 'full_connection')
-        [CNN{l}, CNN{l-1}.delta] = FC_backpropagation(CNN{l}, CNN{l-1}.X, CNN{l-1}.isTensor);
+        [CNN{l}, CNN{l-1}.delta] = BP_full_connection_layer(CNN{l}, CNN{l-1}.X, CNN{l-1}.isTensor);
 
-    % if layer l is activation layer, then multiply delta by derived activation
     elseif strcmp( CNN{l}.type, 'activation' )
-        % transfer the string of activation to function handle of derivatives
-        CNN{l-1}.delta = ACT_backpropagation(CNN{l}, CNN{l-1}.X);
+        CNN{l-1}.delta = BP_activation_layer(CNN{l}, CNN{l-1}.X);
 
     else
         error('layer type wrong');

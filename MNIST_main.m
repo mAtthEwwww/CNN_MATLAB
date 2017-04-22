@@ -23,12 +23,12 @@ clear train
 clear test
 
 tr_config.learning_rate = 0.4;
-tr_config.half_life = 2;
+tr_config.half_life = 5;
 tr_config.momentum = 0;
 tr_config.weight_decay = 0.0001;
 tr_config.batch_size = 50;
 tr_config.validate_interval = 200;
-tr_config.max_epochs = 3;
+tr_config.max_epochs = 5;
 tr_config.cost_function = 'cross_entropy';
 tr_config.threshold = 0.002;
 
@@ -47,7 +47,7 @@ CNN{ l }.weight.shape = [5, 5];
 CNN{ l }.weight.filler.type = 'xavier';
 CNN{ l }.weight.learning_rate = 1;
 CNN{ l }.bias.option = false;
-%CNN{ l }.bias.learning_rate = 2;
+CNN{ l }.bias.learning_rate = 2;
 CNN{ l }.zero_padding.option = false;
 CNN{ l }.output = 20;
 CNN{ l }.bottom = '';
@@ -68,8 +68,8 @@ CNN{ l }.weight.shape = [5, 5];
 CNN{ l }.weight.filler.type = 'xavier';
 CNN{ l }.weight.learning_rate = 1;
 CNN{ l }.bias.option = false;
-%CNN{ l }.bias.learning_rate = 2;
-CNN{ l }.zero_padding.option = true;
+CNN{ l }.bias.learning_rate = 2;
+CNN{ l }.zero_padding.option = false;
 CNN{ l }.output = 40;
 
 l = l + 1;
@@ -87,7 +87,7 @@ CNN{ l }.type = 'full_connection';
 CNN{ l }.weight.filler.type = 'xavier';
 CNN{ l }.weight.learning_rate = 1;
 CNN{ l }.bias.learning_rate = 2;
-CNN{ l }.dropout.option = true;
+CNN{ l }.dropout.option = false;
 CNN{ l }.dropout.rate = 0.5;
 CNN{ l }.output = 200;
 
@@ -107,32 +107,32 @@ l = l + 1;
 CNN{ l }.type = 'activation';
 CNN{ l }.activation = 'softmax';
 
-CNN = CNN_initialization( CNN );
+CNN = CNN_initialization(CNN);
 
 % check_size = 5;
 % epsilon = 1e-8;
 % tolerance = 1e-7;
-% CNN_gradient_check( train_input , train_target , CNN , tr_config.cost_function , check_size , epsilon , tolerance );
+% CNN_gradient_check(train_input, train_target, CNN, tr_config.cost_function, check_size, epsilon, tolerance);
 
 tic;
-CNN = CNN_train( train_input, train_target, validation_input, validation_target, tr_config, CNN );
+CNN = CNN_train(train_input, train_target, validation_input, validation_target, tr_config, CNN);
 train_time = toc;
 
-[accuracy, confusion_matrix] = CNN_test( test_input, test_target, CNN, test_batch_size );
+[accuracy, confusion_matrix] = CNN_test(test_input, test_target, CNN, test_batch_size);
 
-struct_str = sprintf( 'layer 1   type: input                          width:%i\r\n' , CNN{ 1 }.output );
-for l = 2 : length( CNN )
-    if strcmp( CNN{l}.type , 'convolution' )
+struct_str = sprintf('layer 1   type: input                          width:%i\r\n' , CNN{ 1 }.output);
+for l = 2 : length(CNN)
+    if strcmp(CNN{l}.type , 'convolution')
         struct_str = sprintf( '%slayer %i   type: convolution    kernel size: %ix%i   width: %i\r\n', struct_str, l, CNN{l}.weight.shape(1), CNN{l}.weight.shape(2), CNN{l}.output);
     elseif strcmp( CNN{l}.type , 'sampling' )
         struct_str = sprintf( '%slayer %i   type: sampling     stride: %ix%i   sampling size: %ix%i   sampling type: %s\r\n', struct_str, l, CNN{l}.sampling.stride(1), CNN{l}.sampling.stride(2), CNN{l}.sampling.shape(1), CNN{l}.sampling.shape(2), CNN{ l }.sampling.type);
-    elseif strcmp( CNN{l}.type , 'full_connection' )
-        struct_str = sprintf( '%slayer %i   type: full_connection                width: %i\r\n' , struct_str , l , CNN{ l }.output );
-    elseif strcmp( CNN{l}.type, 'activation' )
+    elseif strcmp(CNN{l}.type , 'full_connection')
+        struct_str = sprintf('%slayer %i   type: full_connection                width: %i\r\n', struct_str, l, CNN{ l }.output);
+    elseif strcmp(CNN{l}.type, 'activation')
         struct_str = sprintf( '%slayer %i   type: activation             %s\r\n' , struct_str, l, CNN{l}.activation );
     end
 end
-run_str = sprintf('Accuracy %.2f%%   cost %f   time %.1fs   epochs %i   learning rate %.7f   batchsize %i   momentum %.1f   half life %i   activation %s   weight filler %s', accuracy * 100, CNN{1}.cost, train_time, CNN{1}.epochs, tr_config.learning_rate, tr_config.batch_size, tr_config.momentum, tr_config.half_life, activation, weight_filler.type);
+run_str = sprintf('Accuracy %.2f%%   cost %f   time %.1fs   epochs %i   learning rate %.7f   batchsize %i   momentum %.1f   half life %i', accuracy * 100, CNN{1}.cost, train_time, CNN{1}.epochs, tr_config.learning_rate, tr_config.batch_size, tr_config.momentum, tr_config.half_life);
 log_str = sprintf( '%s\r\n%s' , run_str , struct_str );                 
 
 % output the running log

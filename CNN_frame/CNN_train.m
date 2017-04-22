@@ -101,12 +101,12 @@ while epochs < max_epochs && go_on
 
         % backpropagation with the target set of the mini-batch
         % and calculate the gradient
-        CNN = CNN_backpropagation(batch_target, CNN);
+        CNN = CNN_backpropagation(CNN, batch_target);
 
         % update the weight and bias
         % with graient, momentum, learning rate and weight decay rate
-        CNN = CNN_gradient_descent(CNN, momentum, lr, weight_decay);
-        
+        CNN = CNN_gradient_descent(CNN, lr, momentum, weight_decay);
+
         % if condition is satisfied, do the validate
         if mod(iter, validate_interval) == 0
 

@@ -1,62 +1,62 @@
-function layer = residual_block_constructor( layer , input, input_map_size )
+function block = residual_block_constructor( block , input, input_map_size )
 
 l = 1;
-block{l}.type = 'convolution';
-block{l}.weight = layer.weight;
-block{l}.weight.shape = [3, 3];
-block{l}.bias.option = false;
-block{l}.output = layer.output;
-block{l}.zero_padding.option = true;
-block{l} = convolution_constructor(block{1}, input, input_map_size);
+layer{l}.type = 'convolution';
+layer{l}.weight = block.weight;
+layer{l}.weight.shape = [3, 3];
+layer{l}.bias.option = false;
+layer{l}.output = block.output;
+layer{l}.zero_padding.option = true;
+layer{l} = convolution_constructor(layer{1}, input, input_map_size);
 
-if layer.sampling.option == true
+if block.sampling.option == true
     l = l + 1;
-    layer.sampling.layer = l;
-    block{l}.type = 'sampling';
-    block{l}.sampling = layer.sampling;
-    block{l} = sampling_constructor(block{l}, block{l-1}.output, block{l-1}.map_size);
+    block.sampling.block = l;
+    layer{l}.type = 'sampling';
+    layer{l}.sampling = block.sampling;
+    layer{l} = sampling_constructor(layer{l}, layer{l-1}.output, layer{l-1}.map_size);
 end
 
 l = l + 1;
-block{l}.type = 'batch_normalization';
-block{l}.BN_decay = layer.BN_decay;
-block{l} = batch_normalization_constructor(block{l}, block{l-1}.output, block{l-1}.map_size);
+layer{l}.type = 'batch_normalization';
+layer{l}.BN_decay = block.BN_decay;
+layer{l} = batch_normalization_constructor(layer{l}, layer{l-1}.output, layer{l-1}.map_size);
 
 
 l = l + 1;
-block{l}.type = 'activation';
-block{l}.activation = 'relu';
-block{l} = activation_constructor(block{l}, block{l-1});
+layer{l}.type = 'activation';
+layer{l}.activation = 'relu';
+layer{l} = activation_constructor(layer{l}, layer{l-1});
 
 l = l + 1;
-block{l}.type = 'convolution';
-block{l}.weight = layer.weight;
-block{l}.weight.shape = [3, 3];
-block{l}.bias.option = false;
-block{l}.output = layer.output;
-block{l}.zero_padding.option = true;
-block{l} = convolution_constructor(block{l}, block{l-1}.output, block{l-1}.map_size);
+layer{l}.type = 'convolution';
+layer{l}.weight = block.weight;
+layer{l}.weight.shape = [3, 3];
+layer{l}.bias.option = false;
+layer{l}.output = block.output;
+layer{l}.zero_padding.option = true;
+layer{l} = convolution_constructor(layer{l}, layer{l-1}.output, layer{l-1}.map_size);
 
 l = l + 1;
-block{l}.type = 'residual';
-block{l}.map_size = block{l-1}.map_size;
-block{l}.output = block{l-1}.output;
-block{l}.X = cell(block{l}.output, 1);
+layer{l}.type = 'short_cut';
+layer{l}.map_size = layer{l-1}.map_size;
+layer{l}.output = layer{l-1}.output;
+layer{l}.X = cell(layer{l}.output, 1);
 
 l = l + 1;
-block{l}.type = 'batch_normalization';
-block{l}.BN_decay = layer.BN_decay;
-block{l} = batch_normalization_constructor(block{l}, block{l-1}.output, block{l-1}.map_size);
+layer{l}.type = 'batch_normalization';
+layer{l}.BN_decay = block.BN_decay;
+layer{l} = batch_normalization_constructor(layer{l}, layer{l-1}.output, layer{l-1}.map_size);
 
 l = l + 1;
-block{l}.type = 'activation';
-block{l}.activation = 'relu';
-block{l} = activation_constructor(block{l}, block{l-1});
+layer{l}.type = 'activation';
+layer{l}.activation = 'relu';
+layer{l} = activation_constructor(layer{l}, layer{l-1});
 
-layer.block = block;
+block.layer = layer;
 
-layer.map_size  = block{l}.map_size;
+block.map_size  = layer{l}.map_size;
 
-layer.isTensor = true;
+block.isTensor = true;
 
 end

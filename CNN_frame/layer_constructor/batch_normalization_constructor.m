@@ -8,6 +8,8 @@ layer.output = input;
 
 layer.map_size = input_map_size;
 
+layer.first_train = true;
+
 layer.X = cell(layer.output, 1);
 
 layer.gamma.g = cell(layer.output, 1);
@@ -26,6 +28,7 @@ for j = 1 : layer.output
     layer.gamma.g{j} = 1;
     layer.gamma.grad{j} = 0;
     layer.gamma.momentum{j} = 0;
+
     layer.beta.b{j} = 0;
     layer.beta.grad{j} = 0;
     layer.beta.momentum{j} = 0;

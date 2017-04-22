@@ -15,34 +15,30 @@ end
 % extract the sample size (the number of sample)
 [ ~ , ~ , N ] = size(X{1});
 
-% store the input set in the input layer
-
+% store the input set in the first layer
 CNN{1}.X = X;
 
-% do the feedforward layer by layer
+% execute feedforward layer by layer
 for l = 2 : length(CNN)
-    % if layer l is convolution layer, then do the convolution
+    % judge the type of layer l
     if strcmp(CNN{l}.type, 'convolution')
-        CNN{l} = CN_feedforward(CNN{l}, CNN{l-1}.X);
+        % call the feedforward function accordingly
+        CNN{l} = FF_convolution_layer(CNN{l}, CNN{l-1}.X);
 
     elseif strcmp(CNN{l}.type, 'residual_block')
-        CNN{l} = RESBLK_feedforward(CNN{l}, CNN{l-1}.X, isTrain);
+        CNN{l} = FF_residual_block(CNN{l}, CNN{l-1}.X, isTrain);
         
-    % if layer l is batch normalization layer
     elseif strcmp(CNN{l}.type, 'batch_normalization')
-        CNN{l} = BN_feedforward(CNN{l}, CNN{l-1}.X, isTrain);
+        CNN{l} = FF_batch_normalization_layer(CNN{l}, CNN{l-1}.X, isTrain);
 
-    % if layer l is sampling layer, then do the down sampling
     elseif strcmp(CNN{l}.type, 'sampling')
-        CNN{l} = SMP_feedforward(CNN{l}, CNN{l-1}.X);
+        CNN{l} = FF_sampling_layer(CNN{l}, CNN{l-1}.X);
 
-    % if layer l is full connection layer, then do the inner product
     elseif strcmp(CNN{l}.type, 'full_connection')
-        CNN{l} = FC_feedforward(CNN{l}, CNN{l-1}.X, CNN{l-1}.isTensor, isTrain);
+        CNN{l} = FF_full_connection_layer(CNN{l}, CNN{l-1}.X, CNN{l-1}.isTensor, isTrain);
 
-    % if layer l is activation layer, then do the activation
     elseif strcmp(CNN{l}.type, 'activation')
-        CNN{l} = ACT_feedforward(CNN{l}, CNN{l-1}.X);
+        CNN{l} = FF_activation_layer(CNN{l}, CNN{l-1}.X);
 
     else
         error('layer type wrong')

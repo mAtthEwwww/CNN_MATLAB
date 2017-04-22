@@ -8,7 +8,7 @@ layer.X = cell(input, 1);
 
 if isfield(layer.sampling, 'shape') == false
   
-    layer.sampling.shape = layer.sampling.stride
+    layer.sampling.shape = layer.sampling.stride;
 
 elseif isfield(layer.sampling, 'stride') == false
 

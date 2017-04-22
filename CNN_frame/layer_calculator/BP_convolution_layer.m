@@ -1,4 +1,6 @@
-function [layer, pre_delta] = CN_backpropagation( layer, pre_X )
+function [layer, pre_delta] = BP_convolution_layer( layer, pre_X )
+
+%[~, ~, N] = size(pre_X{1});
 
 for j = 1 : size(layer.weight.kernel, 1)
 

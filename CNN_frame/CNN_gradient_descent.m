@@ -1,39 +1,31 @@
-function CNN =  CNN_gradient_descent ( CNN , momentum , learning_rate , weight_decay )
+function CNN =  CNN_gradient_descent( CNN , lr , momentum ,weight_decay)
 % CNN_gradient_descent.m
 % function for mini-batch gradient descent, with momentum
 %
 % Inputs:
 %       CNN  is an array of cell, each cell is a layer of CNN
-%       momentum  is a number between 0 and 1, presents the rate of gradient momentum
+%       config is a struct, contains the training strategy
 %
 % Outputs:
 %       CNN  is an array of cell
 
-% update the weight and bias layer by layer
-for l = 2 : length( CNN )
-    if strcmp( CNN{l}.type, 'convolution' )
-        for j = 1 : CNN{l}.output
-            for i = 1 : CNN{l-1}.output
-                CNN{l}.weight.momentum{j,i} = momentum * CNN{l}.weight.momentum{j,i} + learning_rate * CNN{l}.weight.learning_rate * (CNN{l}.weight.grad{j,i} + weight_decay * CNN{l}.weight.kernel{j,i});
-                CNN{l}.weight.kernel{j,i} = CNN{l}.weight.kernel{j,i} - CNN{l}.weight.momentum{j,i};
-            end
-            if CNN{l}.bias.option == true
-	            CNN{l}.bias.momentum{j} = momentum * CNN{l}.bias.momentum{j} + learning_rate * CNN{l}.bias.learning_rate * CNN{l}.bias.grad{j};
-                CNN{l}.bias.b{j} = CNN{l}.bias.b{j} - CNN{l}.bias.momentum{j};
-            end
-        end
+
+% update the parameter layer by layer
+for l = 2 : length(CNN)
+    % judge the type of layer l
+    if strcmp(CNN{l}.type, 'convolution')
+        % call the gradient descent function accrodingly
+        CNN{l} = GD_convolution_layer(CNN{l}, lr, momentum, weight_decay);
+
+    elseif strcmp(CNN{l}.type, 'residual_block')
+        CNN{l} = GD_residual_block(CNN{l}, lr, momentum, weight_decay);
+
     elseif strcmp(CNN{l}.type, 'batch_normalization')
-        for j = 1 : CNN{l}.output
-            CNN{l}.gamma.momentum{j} = momentum * CNN{l}.gamma.momentum{j} + learning_rate * CNN{l}.gamma.grad{j};% learning rate of gamma or beta is considerable
-            CNN{l}.gamma.g{j} = CNN{l}.gamma.g{j} - CNN{l}.gamma.momentum{j};
-            CNN{l}.beta.momentum{j} = momentum * CNN{l}.beta.momentum{j} + learning_rate * CNN{l}.beta.grad{j};
-            CNN{l}.beta.b{j} = CNN{l}.beta.b{j} - CNN{l}.beta.momentum{j};
-        end
-    elseif strcmp( CNN{l}.type, 'full_connection' )
-        CNN{l}.weight.momentum = momentum * CNN{l}.weight.momentum + learning_rate * CNN{l}.weight.learning_rate * (CNN{l}.weight.grad + weight_decay * CNN{l}.weight.W );
-        CNN{l}.weight.W = CNN{l}.weight.W - CNN{l}.weight.momentum;
-	    CNN{l}.bias.momentum = momentum * CNN{l}.bias.momentum + learning_rate * CNN{l}.bias.learning_rate * CNN{l}.bias.grad;
-        CNN{l}.bias.b = CNN{l}.bias.b - CNN{l}.bias.momentum;
+        CNN{l} = GD_batch_normalization_layer(CNN{l}, lr, momentum);
+
+    elseif strcmp(CNN{l}.type, 'full_connection')
+        CNN{l} = GD_full_connection_layer(CNN{l}, lr, momentum, weight_decay);
+
     end
 end
 

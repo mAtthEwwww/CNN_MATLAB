@@ -1,4 +1,4 @@
-function pre_delta = SMP_backpropagation( layer, pre_map_size )
+function pre_delta = BP_sampling_layer( layer, pre_map_size )
 
 pre_delta = cell(length(layer.delta), 1);
 

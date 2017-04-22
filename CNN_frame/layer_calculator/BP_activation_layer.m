@@ -1,4 +1,4 @@
-function pre_delta = ACT_backpropagation( layer , pre_X )
+function pre_delta = BP_activation_layer( layer , pre_X )
 
 derived_activation = str2func(['derived_', layer.activation]);
 

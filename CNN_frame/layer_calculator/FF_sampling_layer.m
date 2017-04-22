@@ -1,4 +1,4 @@
-function layer = SMP_feedforward( layer , X )
+function layer = FF_sampling_layer( layer , X )
 
 if strcmp(layer.sampling.type, 'max')
 
@@ -12,7 +12,7 @@ elseif strcmp(layer.sampling.type, 'average')
     
     for j = 1 : length(X)
         
-        layer.X{j} = down_averge_sampling(X{j}, layer.map_size, layer.sampling.shape, layer.sampling.stride, layer.zero_padding.width);
+        layer.X{j} = down_average_sampling(X{j}, layer.map_size, layer.sampling.shape, layer.sampling.stride, layer.zero_padding.width);
     
     end
 

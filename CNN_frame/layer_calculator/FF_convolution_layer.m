@@ -1,4 +1,4 @@
-function layer = CN_feedforward( layer , X )
+function layer = FF_convolution_layer( layer , X )
 
 [~, ~, N] = size(X{1});
 

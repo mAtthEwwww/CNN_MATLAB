@@ -1,4 +1,4 @@
-function layer = ACT_feedforward( layer , X )
+function layer = FF_activation_layer( layer , X )
 
 activation = str2func(layer.activation);
 
