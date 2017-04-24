@@ -15,11 +15,19 @@ The datasets can be downloaded in
     http://www.cs.toronto.edu/~kriz/cifar.html
 
     
-Relevant papers
+Relevant
+
+    Y. LeCun, L. Bottou, Y. Bengio, and P. Haffner. Gradient-based Learning Applied to Document Recognition.
+
+    J. Bouvrie. Notes on Convolutional Neural Networks.
 
     X. Glorot and Y. Bengio. Understanding the difficulty of training deep feedforward neural networks. In AISTATS, 2010.
 
     S. Ioffe and C. Szegedy. Batch normalization: Accelerating deep network training by reducing internal covariate shift. In ICML, 2015.
+    
+    X. Glorot, A. Bordes, and Y. Bengio. Deep sparse rectifier networks.
+
+    X. Glorot and Y. bengio. Understanding the difficulty of training deep feedforward neural networks
 
     K. He, X. Zhang, S. Ren, and J. Sun. Delving deep into rectifiers:Surpassing human-level performance on imagenet classification. In ICCV, 2015.
     
@@ -27,4 +35,6 @@ Relevant papers
 
     K. He, X. Zhang, S. Ren, and J. Sun. Deep Residual Learning for Image Recognition. In CVPR, 2016.
 
-    D. George and E. A. Huerta. Deep Neural Networks to Enable Real-time Multimessenger Astrophysics
+    D. George and E. A. Huerta. Deep Neural Networks to Enable Real-time Multimessenger Astrophysics.
+
+    I. Sutskever, J. Martens, G. Dahl, and G. Hinton. On the Importance of Initialization and Momentum in Deep Learning.
