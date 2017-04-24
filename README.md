@@ -15,7 +15,7 @@ The datasets can be downloaded in
     http://www.cs.toronto.edu/~kriz/cifar.html
 
     
-Related papers
+Relevant papers
 
     X. Glorot and Y. Bengio. Understanding the difficulty of training deep feedforward neural networks. In AISTATS, 2010.
 
