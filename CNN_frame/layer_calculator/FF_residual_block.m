@@ -36,6 +36,8 @@ for l = 2 : length(block.layer)
                 block.layer{l}.X{i} = block.layer{l}.X{i} + X{i};
             end
         end
+    else
+        error('layer type wrong')
     end
 
 end

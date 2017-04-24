@@ -10,7 +10,7 @@ end
 
 layer.zero_padding.inv_width = layer.weight.shape - 1 - layer.zero_padding.width;
 
-layer.isTensor = false;
+layer.isTensor = true;
 
 layer.X = cell(layer.output, 1);
 

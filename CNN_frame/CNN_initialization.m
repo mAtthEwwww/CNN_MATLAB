@@ -7,7 +7,7 @@ function CNN = CNN_initialization( CNN )
 % Outputs:
 %       CNN  is an array of cell
 
-for l = 2 : 1 : length( CNN );
+for l = 2 : 1 : length(CNN);
     % if layer l is a convolution layer, then call the convolution constructor
     if strcmp(CNN{l}.type, 'convolution')
         CNN{l} = convolution_constructor(CNN{l}, CNN{l-1}.output, CNN{l-1}.map_size);

@@ -201,3 +201,164 @@ layer 10   type: full_connection                width: 10
 layer 11   type: activation             softmax
 
 
+Accuracy 97.76%   cost 0.112843   time 1563.6s   epochs 3   learning rate 0.1000000   batchsize 50   momentum 0.0   half life 2
+layer 1   type: input                          width:1
+layer 2   type: convolution    kernel size: 3x3   width: 10
+layer 4   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 5   type: convolution    kernel size: 3x3   width: 20
+layer 7   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 8   type: activation             relu
+layer 9   type: convolution    kernel size: 3x3   width: 40
+layer 10   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 12   type: full_connection                width: 200
+layer 13   type: activation             relu
+layer 14   type: full_connection                width: 10
+layer 15   type: activation             softmax
+
+
+Accuracy 99.10%   cost 0.010855   time 3459.3s   epochs 5   learning rate 0.4000000   batchsize 50   momentum 0.0   half life 5
+layer 1   type: input                          width:1
+layer 2   type: convolution    kernel size: 5x5   width: 20
+layer 4   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 5   type: convolution    kernel size: 5x5   width: 40
+layer 7   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 8   type: full_connection                width: 200
+layer 9   type: activation             relu
+layer 10   type: full_connection                width: 10
+layer 11   type: activation             softmax
+
+
+Accuracy 98.82%   cost 0.056526   time 2249.6s   epochs 3   learning rate 0.4000000   batchsize 50   momentum 0.0   half life 3
+layer 1   type: input                          width:1
+layer 2   type: convolution    kernel size: 5x5   width: 20
+layer 4   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 5   type: convolution    kernel size: 5x5   width: 40
+layer 7   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 8   type: full_connection                width: 200
+layer 9   type: activation             relu
+layer 10   type: full_connection                width: 10
+layer 11   type: activation             softmax
+
+
+Accuracy 98.59%   cost 0.052588   time 17371.0s   epochs 20   learning rate 0.1000000   batchsize 50   momentum 0.0   half life 5
+layer 1   type: input                          width:1
+layer 2   type: convolution    kernel size: 3x3   width: 10
+layer 4   type: convolution    kernel size: 3x3   width: 10
+layer 6   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 7   type: activation             relu
+layer 8   type: convolution    kernel size: 3x3   width: 20
+layer 10   type: convolution    kernel size: 3x3   width: 20
+layer 12   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 13   type: activation             relu
+layer 14   type: convolution    kernel size: 3x3   width: 40
+layer 15   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 17   type: full_connection                width: 120
+layer 18   type: activation             relu
+layer 19   type: full_connection                width: 10
+layer 20   type: activation             softmax
+
+
+Accuracy 98.94%   cost 0.024395   time 2250.7s   epochs 3   learning rate 0.4000000   batchsize 50   momentum 0.0   half life 3
+layer 1   type: input                          width:1
+layer 2   type: convolution    kernel size: 5x5   width: 20
+layer 4   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 5   type: convolution    kernel size: 5x5   width: 40
+layer 7   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 8   type: full_connection                width: 200
+layer 9   type: activation             relu
+layer 10   type: full_connection                width: 10
+layer 11   type: activation             softmax
+
+
+Accuracy 98.82%   cost 0.022131   time 2268.9s   epochs 3   learning rate 0.4000000   batchsize 50   momentum 0.0   half life 2
+layer 1   type: input                          width:1
+layer 2   type: convolution    kernel size: 5x5   width: 20
+layer 4   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 5   type: convolution    kernel size: 5x5   width: 40
+layer 7   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 8   type: full_connection                width: 200
+layer 9   type: activation             relu
+layer 10   type: full_connection                width: 10
+layer 11   type: activation             softmax
+
+
+Accuracy 98.90%   cost 0.053063   time 2277.8s   epochs 3   learning rate 0.5000000   batchsize 50   momentum 0.0   half life 2
+layer 1   type: input                          width:1
+layer 2   type: convolution    kernel size: 5x5   width: 20
+layer 4   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 5   type: convolution    kernel size: 5x5   width: 40
+layer 7   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 8   type: full_connection                width: 200
+layer 9   type: activation             relu
+layer 10   type: full_connection                width: 10
+layer 11   type: activation             softmax
+
+
+Accuracy 99.16%   cost 0.043122   time 2969.9s   epochs 4   learning rate 0.4000000   batchsize 50   momentum 0.0   half life 2
+layer 1   type: input                          width:1
+layer 2   type: convolution    kernel size: 5x5   width: 20
+layer 4   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 5   type: convolution    kernel size: 5x5   width: 40
+layer 7   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 8   type: full_connection                width: 200
+layer 9   type: activation             relu
+layer 10   type: full_connection                width: 10
+layer 11   type: activation             softmax
+
+
+Accuracy 84.46%   cost 1.098689   time 3157.5s   epochs 3   learning rate 0.0500000   batchsize 50   momentum 0.0   half life 5
+layer 1   type: input   width:1
+layer 5   type: full_connection   1ropout option: 80   width: layer 6   type: activation             relu
+layer 7   type: full_connection   0ropout option: 10   width: layer 8   type: activation             softmax
+
+
+Accuracy 98.86%   cost 0.054303   time 2194.6s   epochs 3   learning rate 0.4000000   batchsize 50   momentum 0.0   half life 2
+layer 1   type: input   width:1
+layer 2   type: convolution    kernel size: 5x5   bias option: 0   width: 20
+layer 3   type: batch normalization   moving average rate: 0.990
+layer 4   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 5   type: convolution    kernel size: 5x5   bias option: 0   width: 40
+layer 6   type: batch normalization   moving average rate: 0.990
+layer 7   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: max
+layer 8   type: full_connection   1ropout option: 200   width: layer 9   type: activation             relu
+layer 10   type: full_connection   0ropout option: 10   width: layer 11   type: activation             softmax
+
+
+Accuracy 60.13%   cost 1.319146   time 3016.6s   epochs 3   learning rate 0.0200000   batchsize 50   momentum 0.0   half life 5
+layer 1   type: input   width:1
+layer 5   type: full_connection   1ropout option: 80   width: layer 6   type: activation             relu
+layer 7   type: full_connection   0ropout option: 10   width: layer 8   type: activation             softmax
+
+
+Accuracy 68.53%   cost 1.052208   time 6048.8s   epochs 3   learning rate 0.0200000   batchsize 50   momentum 0.0   half life 5
+layer 1   type: input   width:1
+layer 5   type: full_connection   1ropout option: 80   width: layer 6   type: activation             relu
+layer 7   type: full_connection   0ropout option: 10   width: layer 8   type: activation             softmax
+
+
+Accuracy 71.00%   cost 0.954886   time 9513.3s   epochs 3   learning rate 0.0100000   batchsize 50   momentum 0.0   half life 5
+layer 1   type: input   width:1
+layer 5   type: full_connection   1ropout option: 80   width: layer 6   type: activation             relu
+layer 7   type: full_connection   0ropout option: 10   width: layer 8   type: activation             softmax
+
+
+Accuracy 58.92%   cost 1.328303   time 12847.8s   epochs 10   learning rate 0.0500000   batchsize 30   momentum 0.9   half life 5
+layer 1   type: input   width:3
+layer 2   type: convolution    kernel size: 3x3   bias option: 1   width: 10
+layer 3   type: activation             relu
+layer 4   type: convolution    kernel size: 3x3   bias option: 1   width: 20
+layer 5   type: activation             relu
+layer 6   type: sampling     stride: 2x2   sampling size: 3x3   sampling type: average
+layer 7   type: convolution    kernel size: 3x3   bias option: 1   width: 40
+layer 8   type: activation             relu
+layer 9   type: sampling     stride: 2x2   sampling size: 3x3   sampling type: average
+layer 10   type: full_connection   1ropout option: 32   width: layer 11   type: activation             relu
+layer 12   type: full_connection   0ropout option: 10   width: layer 13   type: activation             softmax
+
+
+Accuracy 78.18%   cost 0.768269   time 19565.6s   epochs 20   learning rate 0.0200000   batchsize 50   momentum 0.0   half life 10
+layer 1   type: input   width:1
+layer 5   type: full_connection   1ropout option: 80   width: layer 6   type: activation             relu
+layer 7   type: full_connection   0ropout option: 10   width: layer 8   type: activation             softmax
+
+
