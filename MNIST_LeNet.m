@@ -29,7 +29,6 @@ tr_config.weight_decay = 0.0001;
 tr_config.batch_size = 50;
 tr_config.validate_interval = 200;
 tr_config.max_epochs = 4;
-tr_config.cost_function = 'cross_entropy';
 tr_config.threshold = 0.002;
 
 input_size = size(train_input{1}(:, :, 1));
@@ -38,74 +37,75 @@ test_batch_size = 1000;
 
 
 l = 1;
-CNN{ l }.map_size = input_size;
-CNN{ l }.output = input_channel;
+CNN{l}.map_size = input_size;
+CNN{l}.output = input_channel;
 
 l = l + 1;
-CNN{ l }.type = 'convolution';
-CNN{ l }.weight.shape = [5, 5];
-CNN{ l }.weight.filler.type = 'xavier';
-CNN{ l }.weight.learning_rate = 1;
-CNN{ l }.bias.option = false;
-CNN{ l }.bias.learning_rate = 2;
-CNN{ l }.zero_padding.option = false;
-CNN{ l }.output = 20;
-CNN{ l }.bottom = '';
+CNN{l}.type = 'convolution';
+CNN{l}.weight.shape = [5, 5];
+CNN{l}.weight.filler.type = 'xavier';
+CNN{l}.weight.learning_rate = 1;
+CNN{l}.bias.option = false;
+CNN{l}.bias.learning_rate = 2;
+CNN{l}.zero_padding.option = false;
+CNN{l}.output = 20;
+CNN{l}.bottom = '';
 
 l = l + 1;
-CNN{ l }.type = 'batch_normalization';
-CNN{ l }.BN_decay = 0.99;
+CNN{l}.type = 'batch_normalization';
+CNN{l}.BN_decay = 0.99;
 
 l = l + 1;
-CNN{ l }.type = 'sampling';
-CNN{ l }.sampling.type = 'max';
-CNN{ l }.sampling.shape = [2, 2];
-CNN{ l }.sampling.stride = [2, 2];
+CNN{l}.type = 'sampling';
+CNN{l}.sampling.type = 'max';
+CNN{l}.sampling.shape = [2, 2];
+CNN{l}.sampling.stride = [2, 2];
 
 l = l + 1;
-CNN{ l }.type = 'convolution';
-CNN{ l }.weight.shape = [5, 5];
-CNN{ l }.weight.filler.type = 'xavier';
-CNN{ l }.weight.learning_rate = 1;
-CNN{ l }.bias.option = false;
-CNN{ l }.bias.learning_rate = 2;
-CNN{ l }.zero_padding.option = false;
-CNN{ l }.output = 40;
+CNN{l}.type = 'convolution';
+CNN{l}.weight.shape = [5, 5];
+CNN{l}.weight.filler.type = 'xavier';
+CNN{l}.weight.learning_rate = 1;
+CNN{l}.bias.option = false;
+CNN{l}.bias.learning_rate = 2;
+CNN{l}.zero_padding.option = false;
+CNN{l}.output = 40;
 
 l = l + 1;
-CNN{ l }.type = 'batch_normalization';
-CNN{ l }.BN_decay = 0.99;
+CNN{l}.type = 'batch_normalization';
+CNN{l}.BN_decay = 0.99;
 
 l = l + 1;
-CNN{ l }.type = 'sampling';
-CNN{ l }.sampling.type = 'max';
-CNN{ l }.sampling.shape = [2, 2];
-CNN{ l }.sampling.stride = [2, 2];
+CNN{l}.type = 'sampling';
+CNN{l}.sampling.type = 'max';
+CNN{l}.sampling.shape = [2, 2];
+CNN{l}.sampling.stride = [2, 2];
 
 l = l + 1;
-CNN{ l }.type = 'full_connection';
-CNN{ l }.weight.filler.type = 'xavier';
-CNN{ l }.weight.learning_rate = 1;
-CNN{ l }.bias.learning_rate = 2;
-CNN{ l }.dropout.option = true;
-CNN{ l }.dropout.rate = 0.5;
-CNN{ l }.output = 200;
+CNN{l}.type = 'full_connection';
+CNN{l}.weight.filler.type = 'xavier';
+CNN{l}.weight.learning_rate = 1;
+CNN{l}.bias.learning_rate = 2;
+CNN{l}.dropout.option = true;
+CNN{l}.dropout.rate = 0.5;
+CNN{l}.output = 200;
 
 l = l + 1;
-CNN{ l }.type = 'activation';
-CNN{ l }.activation = 'relu';
+CNN{l}.type = 'activation';
+CNN{l}.activation = 'relu';
 
 l = l + 1;
-CNN{ l }.type = 'full_connection';
-CNN{ l }.weight.filler.type = 'xavier';
-CNN{ l }.weight.learning_rate = 1;
-CNN{ l }.bias.learning_rate = 2;
-CNN{ l }.dropout.option= false;
-CNN{ l }.output = 10;
+CNN{l}.type = 'full_connection';
+CNN{l}.weight.filler.type = 'xavier';
+CNN{l}.weight.learning_rate = 1;
+CNN{l}.bias.learning_rate = 2;
+CNN{l}.dropout.option= false;
+CNN{l}.output = 10;
 
 l = l + 1;
-CNN{ l }.type = 'activation';
-CNN{ l }.activation = 'softmax';
+CNN{l}.type = 'activation';
+CNN{l}.activation = 'softmax';
+CNN{l}.cost_function = 'cross_entropy';
 
 CNN = CNN_initialization(CNN);
 
@@ -116,7 +116,7 @@ CNN = CNN_initialization(CNN);
 
 tic;
 
-CNN = CNN_train(train_input, train_target, validation_input, validation_target, tr_config, CNN);
+[CNN, result] = CNN_train(train_input, train_target, validation_input, validation_target, tr_config, CNN);
 
 result.train_time = toc;
 

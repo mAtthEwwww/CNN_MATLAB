@@ -1,4 +1,4 @@
-function CNN = CNN_train( train_input , train_target , validation_input , validation_target , config , CNN )
+function [ CNN , result ]  = CNN_train( train_input , train_target , validation_input , validation_target , config , CNN )
 % CNN_train.m
 % CNN training function, optimizing with stochastic gradient descent
 
@@ -33,7 +33,6 @@ max_epochs = config.max_epochs;
 momentum = config.momentum;
 batch_size = config.batch_size;
 validate_interval = config.validate_interval;
-cost_function = str2func( config.cost_function );
 threshold = config.threshold;
 
 % extract the sample size
@@ -97,7 +96,7 @@ while epochs < max_epochs && go_on
         end
 
         % feedforward with input set of the mini-batch 
-        CNN = CNN_feedforward(CNN, batch_input, true);
+        CNN = CNN_feedforward(CNN, batch_input, true, batch_target);
 
         % backpropagation with the target set of the mini-batch
         % and calculate the gradient
@@ -122,8 +121,8 @@ while epochs < max_epochs && go_on
             validate_accuracy(2, validated) = accuracy;
         end
 
-        % calculate the cost value
-        cost(iter) = cost_function(CNN{length(CNN)}.X, batch_target);        
+        % extract the cost value
+        cost(iter) = CNN{length(CNN)}.cost_value;
 
         % calculate the moving average of cost value
         average_cost(iter) = mean(cost(max(1, iter - iterations) : iter));
@@ -154,9 +153,9 @@ set( get( img(2), 'ylabel' ), 'string', 'AC', 'fontsize', 16 );
 xlabel( 'iterations', 'fontsize', 16 );
 
 % store the last moving average value in the first layer
-CNN{1}.cost = average_cost( iter );
+result.cost = average_cost(iter);
 
 % store the epochs number in the first layer
-CNN{1}.epochs = epochs;
+result.cost = epochs;
 
 end

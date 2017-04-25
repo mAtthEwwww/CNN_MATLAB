@@ -14,7 +14,7 @@ for l = 2 : length(CNN)
         struct_str = sprintf( '%slayer %i   type: activation             %s\r\n' , struct_str, l, CNN{l}.activation );
     end
 end
-run_str = sprintf('Accuracy %.2f%%   cost %f   time %.1fs   epochs %i   learning rate %.7f   batchsize %i   momentum %.1f   half life %i', result.accuracy * 100, CNN{1}.cost, result.train_time, CNN{1}.epochs, config.learning_rate, config.batch_size, config.momentum, config.half_life);
+run_str = sprintf('Accuracy %.2f%%   cost %f   time %.1fs   epochs %i   learning rate %.7f   batchsize %i   momentum %.1f   half life %i', result.accuracy * 100, result.cost, result.train_time, result.epochs, config.learning_rate, config.batch_size, config.momentum, config.half_life);
 log_str = sprintf( '%s\r\n%s' , run_str , struct_str );                 
 
 % output the running log
@@ -23,7 +23,7 @@ fprintf(fid, '%s\r\n\r\n', log_str );
 fclose(fid);
 
 title_str = sprintf( 'AC:%.2f%%, cost:%.4f, TIME:%.1fs, EPOCHS:%i, LR:%.7f, BATCHSIZE:%i', ...
-     result.accuracy*100, CNN{1}.cost, result.train_time, CNN{1}.epochs, config.learning_rate, config.batch_size);
+     result.accuracy*100, result.cost, result.train_time, result.epochs, config.learning_rate, config.batch_size);
 
 title( title_str );
 ylim([0 2.5]);

@@ -1,4 +1,4 @@
-function CNN = CNN_feedforward( CNN , X , isTrain )
+function CNN = CNN_feedforward( CNN , X , isTrain , T )
 % CNN_feedforward.m
 % the feedforward function of CNN
 % Inputs:
@@ -44,5 +44,9 @@ for l = 2 : length(CNN)
         error('layer type wrong')
     end
 end
+
+cost_function = str2func(CNN{l}.cost_function);
+
+CNN{l}.cost_value = cost_function(CNN{l}.X, T);
 
 end

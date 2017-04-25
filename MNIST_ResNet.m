@@ -32,16 +32,21 @@ test_batch_size = 1000;
 
 %% -------------configure the training strategy-------------
 
-tr_config.learning_rate = 0.02;
-tr_config.half_life = 10;
-tr_config.momentum = 0;
-tr_config.weight_decay = 0.0001;
-tr_config.batch_size = 30;
-tr_config.validate_interval = 200;
-tr_config.max_epochs = 5;
-tr_config.cost_function = 'cross_entropy';
-tr_config.threshold = 0.002;
+% warming up
+config_step1.learning_rate = 0.02;
+config_step1.half_life = inf;
+config_step1.momentum = 0;
+config_step1.weight_decay = 0.0001;
+config_step1.batch_size = 30;
+config_step1.validate_interval = 200;
+config_step1.max_epochs = 1;
+config_step1.threshold = 0.002;
 
+% training
+config_step2 = config_step1;
+config_step2.learning_rate = 0.05;
+config_step2.half_life = 5;
+config_step2.max_epochs = 5;
 
 %% -------------define the structure of CNN----------------
 
@@ -106,6 +111,7 @@ CNN{l}.output = 10;
 l = l + 1;
 CNN{l}.type = 'activation';
 CNN{l}.activation = 'softmax';
+CNN{l}.cost_function = 'cross_entropy';
 
 
 %% -------------initializaing the CNN-------------------
@@ -125,7 +131,11 @@ CNN = CNN_initialization(CNN);
 
 tic;
 
-CNN = CNN_train(train_input, train_target, validation_input, validation_target, tr_config, CNN);
+% training step 1
+[CNN, result] = CNN_train(train_input, train_target, validation_input, validation_target, config_step1, CNN);
+
+% training step 2
+[CNN, result] = CNN_train(train_input, train_target, validation_input, validation_target, config_step2, CNN);
 
 result.train_time = toc;
 

@@ -47,7 +47,6 @@ tr_config.weight_decay = 0.00001;                           % the ratio of weigh
 tr_config.batch_size = 30;                                  % the batch-size of stochastic gradient descent
 tr_config.validate_interval = 5000;                         % the interval (iteration) between successive validation
 tr_config.max_epochs = 10;                                  % the maximum number of epochs
-tr_config.cost_function = 'cross_entropy';                  % the cost function
 tr_config.threshold = 0.05;                                 % the threshold of cost value
 
 
@@ -193,6 +192,7 @@ CNN{l}.output = 10;
 l = l + 1;
 CNN{l}.type = 'activation';
 CNN{l}.activation = 'softmax';
+CNN{l}.cost_function = 'cross_entropy';
 
 
 
@@ -213,7 +213,7 @@ CNN = CNN_initialization(CNN);
 
 tic;
 
-CNN = CNN_train(train_input, train_target, validation_input, validation_target, tr_config, CNN);
+[CNN, result] = CNN_train(train_input, train_target, validation_input, validation_target, tr_config, CNN);
 
 result.train_time = toc;
 
