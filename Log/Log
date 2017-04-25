@@ -362,3 +362,15 @@ layer 5   type: full_connection   1ropout option: 80   width: layer 6   type: ac
 layer 7   type: full_connection   0ropout option: 10   width: layer 8   type: activation             softmax
 
 
+Accuracy 97.84%   cost 0.120569   time 2153.0s   epochs 4   learning rate 0.4000000   batchsize 50   momentum 0.0   half life 2
+layer 1   type: input   width:1
+layer 2   type: convolution    kernel size: 5x5   bias option: 0   width: 20
+layer 3   type: batch normalization   moving average rate: 0.990
+layer 4   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: grid
+layer 5   type: convolution    kernel size: 5x5   bias option: 0   width: 40
+layer 6   type: batch normalization   moving average rate: 0.990
+layer 7   type: sampling     stride: 2x2   sampling size: 2x2   sampling type: grid
+layer 8   type: full_connection   1ropout option: 200   width: layer 9   type: activation             relu
+layer 10   type: full_connection   0ropout option: 10   width: layer 11   type: activation             softmax
+
+

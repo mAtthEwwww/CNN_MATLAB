@@ -7,7 +7,6 @@ for j = 1 : size(layer.weight.kernel, 1)
     layer.X{j} = zeros([layer.map_size, N]);
 
     for i = 1 : size(layer.weight.kernel, 2)
-
         layer.X{j} = layer.X{j} + convolution(X{i}, layer.weight.kernel{j,i}, layer.zero_padding.width);
 
     end

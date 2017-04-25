@@ -3,11 +3,13 @@ function CNN =  CNN_gradient_descent( CNN , learning_rate , momentum ,weight_dec
 % function for mini-batch gradient descent, with momentum
 %
 % Inputs:
-%       CNN  is an array of cell, each cell is a layer of CNN
-%       config is a struct, contains the training strategy
+%       CNN is an array of cell, each cell is a layer of the network
+%       learning_rate is a postive number, which is the global learning rate
+%       momentum is a number between 0 and 1, which is the momentum rate of GD
+%       weight is a postive number, which is the ratio of L2 normalization
 %
 % Outputs:
-%       CNN  is an array of cell
+%       CNN is an array of cell, each cell is a layer of the network
 
 
 % update the parameter layer by layer

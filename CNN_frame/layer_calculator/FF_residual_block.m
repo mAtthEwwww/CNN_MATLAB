@@ -1,8 +1,5 @@
 function block = FF_residual_block( block , X , isTrain )
 
-if nargin < 3
-    isTrain = false;
-end
 
 [~, ~, N] = size(X{1});
 
@@ -12,11 +9,9 @@ for l = 2 : length(block.layer)
     if strcmp(block.layer{l}.type, 'convolution')
         block.layer{l} = FF_convolution_layer(block.layer{l}, block.layer{l-1}.X);
 
-    % if block l is batch normalization block
     elseif strcmp(block.layer{l}.type, 'batch_normalization')
         block.layer{l} = FF_batch_normalization_layer(block.layer{l}, block.layer{l-1}.X, isTrain);
 
-    % if block l is sampling block, then do the down sampling
     elseif strcmp(block.layer{l}.type, 'sampling')
         block.layer{l} = FF_sampling_layer(block.layer{l}, block.layer{l-1}.X);
 
@@ -25,17 +20,20 @@ for l = 2 : length(block.layer)
 
     elseif strcmp(block.layer{l}.type, 'short_cut')
         block.layer{l}.X = block.layer{l-1}.X;
-        if block.sampling.option == true
-            shortcut_samp = block.layer{block.sampling.block};
-            shortcut_samp = FF_sampling_layer(shortcut_samp, X);
-            for i = 1 : length(X)
-                block.layer{l}.X{i} = block.layer{l}.X{i} + shortcut_samp.X{i};
-            end
-        else
-            for i = 1 : length(X)
-                block.layer{l}.X{i} = block.layer{l}.X{i} + X{i};
-            end
+        if isfield(block.layer{l}, 'smp')
+            block.layer{l}.smp = FF_sampling_layer(block.layer{l}.smp, X);
+            X = block.layer{l}.smp.X;
         end
+        if isfield(block.layer{l}, 'conv')
+            block.layer{l}.conv.pre_X = X;
+            block.layer{l}.conv = FF_convolution_layer(block.layer{l}.conv, block.layer{l}.conv.pre_X);
+            block.layer{l}.bn = FF_batch_normalization_layer(block.layer{l}.bn, block.layer{l}.conv.X, isTrain);
+            X = block.layer{l}.bn.X;
+        end
+        for i = 1 : length(X)
+            block.layer{l}.X{i} = block.layer{l}.X{i} + X{i};
+        end
+
     else
         error('layer type wrong')
     end

@@ -17,13 +17,17 @@ for l = length(block.layer) : -1 : 2
 
     elseif strcmp(block.layer{l}.type, 'short_cut')
         block.layer{l-1}.delta = block.layer{l}.delta;
-        if block.sampling.option == true
-            shortcut_samp = block.layer{block.sampling.block};
-            shortcut_samp.delta = block.layer{l}.delta;
-            shortcut_delta = BP_sampling_layer(shortcut_samp, size(pre_X{1}(:,:,1)));
-        else
-            shortcut_delta = block.layer{l}.delta;
+        shortcut_delta = block.layer{l}.delta;
+        if isfield(block.layer{l}, 'conv')
+            block.layer{l}.bn.delta = shortcut_delta;
+            [block.layer{l}.bn, block.layer{l}.conv.delta] = BP_batch_normalization_layer(block.layer{l}.bn);
+            [block.layer{l}.conv, shortcut_delta] = BP_convolution_layer(block.layer{l}.conv, block.layer{l}.conv.pre_X);
         end
+        if isfield(block.layer{l}, 'smp')
+            block.layer{l}.smp.delta = shortcut_delta;
+            shortcut_delta = BP_sampling_layer(block.layer{l}.smp, size(pre_X{1}(:,:,1)));
+        end
+
     else
         error('layer type wrong')
     end
