@@ -45,8 +45,12 @@ for l = 2 : length(CNN)
     end
 end
 
-cost_function = str2func(CNN{l}.cost_function);
+if isTrain
 
-CNN{l}.cost_value = cost_function(CNN{l}.X, T);
+    cost_function = str2func(CNN{l}.cost_function);
+
+    CNN{l}.cost_value = cost_function(CNN{l}.X, T);
+
+end
 
 end
