@@ -1,11 +1,11 @@
 # Convolution Neural Network on MATLAB
 
 ##  Contents
-CIFAR_LeNet.m, CIFAR-10 image classification with LeNet
+CIFAR_LeNet.m, an example of CIFAR-10 image classification with LeNet
 
-MNIST_LeNet.m, MNIST handwritten digits classification with LeNet
+MNIST_LeNet.m, an example of MNIST handwritten digits classification with LeNet
 
-MNIST_ResNet.m, MNIST handwritten digits classfication with deep residual net (incomplete)
+MNIST_ResNet.m, an example of MNIST handwritten digits classfication with deep residual net (incomplete)
 
 Gravity_main.m, an example of Gravity signal detection
 
@@ -22,7 +22,7 @@ http://www.cs.toronto.edu/~kriz/cifar.html
 
 Gradient-based Learning Applied to Document Recognition
 
-yann.lecun.com/exdb/publis/pdf/lecun-98.pdf
+http://yann.lecun.com/exdb/publis/pdf/lecun-98.pdf
 
 Notes on Convolutional Neural Networks
 
