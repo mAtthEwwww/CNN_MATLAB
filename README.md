@@ -8,33 +8,41 @@ MNIST_ResNet.m, MNIST handwritten digits classfication with deep residual net (i
 
 Gravity_main.m, an example of Gravity signal detection
 
-The datasets can be downloaded in
+Datasets can be downloaded in
 
     http://yann.lecun.com/exdb/mnist/
 
     http://www.cs.toronto.edu/~kriz/cifar.html
 
     
-Relevant
+Related papers
 
-    Y. LeCun, L. Bottou, Y. Bengio, and P. Haffner. Gradient-based Learning Applied to Document Recognition.
+    Gradient-based Learning Applied to Document Recognition
 
-    J. Bouvrie. Notes on Convolutional Neural Networks.
+    yann.lecun.com/exdb/publis/pdf/lecun-98.pdf
 
-    X. Glorot and Y. Bengio. Understanding the difficulty of training deep feedforward neural networks. In AISTATS, 2010.
+    Notes on Convolutional Neural Networks
 
-    S. Ioffe and C. Szegedy. Batch normalization: Accelerating deep network training by reducing internal covariate shift. In ICML, 2015.
-    
-    X. Glorot, A. Bordes, and Y. Bengio. Deep sparse rectifier networks.
+    https://pdfs.semanticscholar.org/714a/c6c7dbb83d69b8118e5138b3a50d8feb789b.pdf
 
-    X. Glorot and Y. bengio. Understanding the difficulty of training deep feedforward neural networks
+    Understanding the difficulty of training deep feedforward neural networks
 
-    K. He, X. Zhang, S. Ren, and J. Sun. Delving deep into rectifiers:Surpassing human-level performance on imagenet classification. In ICCV, 2015.
-    
-    A. Krizhevsky, I. Sutskever, and G. Hinton. Imagenet classification with deep convolutional neural networks. In NIPS, 2012.
+    http://machinelearning.wustl.edu/mlpapers/paper_files/AISTATS2010_GlorotB10.pdf
 
-    K. He, X. Zhang, S. Ren, and J. Sun. Deep Residual Learning for Image Recognition. In CVPR, 2016.
+    Batch normalization: Accelerating deep network training by reducing internal covariate shift
 
-    D. George and E. A. Huerta. Deep Neural Networks to Enable Real-time Multimessenger Astrophysics.
+    https://arxiv.org/pdf/1502.03167.pdf
 
-    I. Sutskever, J. Martens, G. Dahl, and G. Hinton. On the Importance of Initialization and Momentum in Deep Learning.
+    Delving deep into rectifiers:Surpassing human-level performance on imagenet classification
+
+    https://arxiv.org/pdf/1502.01852.pdf
+
+    Imagenet classification with deep convolutional neural networks
+
+    http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
+
+    Deep Residual Learning for Image Recognition
+
+    https://arxiv.org/pdf/1512.03385.pdf
+
+    On the Importance of Initialization and Momentum in Deep Learning

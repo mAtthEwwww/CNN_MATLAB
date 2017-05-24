@@ -143,19 +143,19 @@ figure
 
 % draw the curve of cost moving average
 % draw the curve of validation accuracy
-[ img, ~, ~ ] = plotyy( 1 : iter, average_cost( 1 : iter ) , validate_accuracy( 1 , 1 : validated ) , validate_accuracy( 2 , 1 : validated ) , @plot );
+[img, ~, ~] = plotyy(1:iter, average_cost(1:iter), validate_accuracy(1, 1:validated), validate_accuracy(2, 1:validated), @plot);
 
 % draw the y label
-set( get( img(1), 'ylabel' ), 'string', 'cost value', 'fontsize', 16 );
-set( get( img(2), 'ylabel' ), 'string', 'AC', 'fontsize', 16 );
+set(get(img(1), 'ylabel'), 'string', 'cost value', 'fontsize', 16);
+set(get(img(2), 'ylabel'), 'string', 'AC', 'fontsize', 16);
 
 % draw the x label
-xlabel( 'iterations', 'fontsize', 16 );
+xlabel('iterations', 'fontsize', 16);
 
 % store the last moving average value in the first layer
 result.cost = average_cost(iter);
 
 % store the epochs number in the first layer
-result.cost = epochs;
+result.epochs = epochs;
 
 end

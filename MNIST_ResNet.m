@@ -44,9 +44,15 @@ config_step1.threshold = 0.002;
 
 % training
 config_step2 = config_step1;
-config_step2.learning_rate = 0.05;
-config_step2.half_life = 5;
-config_step2.max_epochs = 5;
+config_step2.learning_rate = 0.07;
+config_step2.half_life = 8;
+config_step2.max_epochs = 4;
+
+% training
+config_step3 = config_step2;
+config_step3.learning_rate = 0.03;
+config_step3.max_epochs = 10;
+
 
 %% -------------define the structure of CNN----------------
 
@@ -137,6 +143,9 @@ tic;
 % training step 2
 [CNN, result] = CNN_train(train_input, train_target, validation_input, validation_target, config_step2, CNN);
 
+% training step 3
+[CNN, result] = CNN_train(train_input, train_target, validation_input, validation_target, config_step3, CNN);
+
 result.train_time = toc;
 
 
@@ -147,6 +156,6 @@ result.train_time = toc;
 
 %% ------------save the running log and figure---------
 
-writing_log(CNN, result, tr_config);
+writing_log(CNN, result, config_step2);
 
 

@@ -40,15 +40,19 @@ test_batch_size = 2000;                                     % the size of a test
 
 %% -------------configure the training strategy-------------
 
-tr_config.learning_rate = 0.05;                             % initial global learning rate
-tr_config.half_life = 5;                                    % learning rate exponential decay with specific half-life
-tr_config.momentum = 0.9;                                   % momentum (or exponential moving average) of gradient
-tr_config.weight_decay = 0.00001;                           % the ratio of weight decay
-tr_config.batch_size = 30;                                  % the batch-size of stochastic gradient descent
-tr_config.validate_interval = 5000;                         % the interval (iteration) between successive validation
-tr_config.max_epochs = 10;                                  % the maximum number of epochs
-tr_config.cost_function = 'cross_entropy';                  % the cost function
-tr_config.threshold = 0.05;                                 % the threshold of cost value
+config_step1.learning_rate = 0.001;
+config_step1.half_life = inf;
+config_step1.momentum = 0.9;
+config_step1.weight_decay = 0.00001;
+config_step1.batch_size = 10;
+config_step1.validate_interval = 1000;
+config_step1.max_epochs = 1;
+config_step1.threshold = 0.05;
+
+config_step2 = config_step1;
+config_step2.learning_rate = 0.01;
+config_step2.half_life = 5;
+config_step2.max_epochs = 5;
 
 
 %% -------------define the structure of CNN----------------
@@ -92,6 +96,17 @@ CNN{l}.sampling.shape = [2, 2];
 CNN{l}.sampling.stride = [2, 2];
 CNN{l}.output = 40;
 
+l = l + 1;
+CNN{l}.type = 'residual_block';
+CNN{l}.weight.filler.type = 'xavier';
+CNN{l}.weight.learning_rate = 1;
+CNN{l}.BN_decay = 0.99;
+CNN{l}.sampling.option = true;
+CNN{l}.sampling.type = 'max';
+CNN{l}.sampling.shape = [2, 2];
+CNN{l}.sampling.stride = [2, 2];
+CNN{l}.output = 80;
+
 
 % full connection layer
 l = l + 1;
@@ -102,7 +117,7 @@ CNN{l}.weight.learning_rate = 1;
 CNN{l}.bias.learning_rate = 2;
 CNN{l}.dropout.option = true;
 CNN{l}.dropout.rate = 0.5;
-CNN{l}.output = 32;
+CNN{l}.output = 64;
 
 
 % activation layer
@@ -126,6 +141,7 @@ CNN{l}.output = 10;
 l = l + 1;
 CNN{l}.type = 'activation';
 CNN{l}.activation = 'softmax';
+CNN{l}.cost_function = 'cross_entropy';
 
 
 
@@ -146,7 +162,9 @@ CNN = CNN_initialization(CNN);
 
 tic;
 
-CNN = CNN_train(train_input, train_target, validation_input, validation_target, tr_config, CNN);
+[CNN, result] = CNN_train(train_input, train_target, validation_input, validation_target, config_step1, CNN);
+
+[CNN, result] = CNN_train(train_input, train_target, validation_input, validation_target, config_step2, CNN);
 
 result.train_time = toc;
 
@@ -158,4 +176,4 @@ result.train_time = toc;
 
 %% ------------save the running log and figure---------
 
-writing_log(CNN, result, tr_config);
+writing_log(CNN, result, config_step2);

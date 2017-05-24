@@ -380,3 +380,21 @@ layer 5   type: full_connection   1ropout option: 80   width: layer 6   type: ac
 layer 7   type: full_connection   0ropout option: 10   width: layer 8   type: activation             softmax
 
 
+Accuracy 98.60%   cost 5.000000   time 38770.8s   epochs 20   learning rate 0.0005000   batchsize 30   momentum 0.0   half life 5
+layer 1   type: input   width:1
+layer 5   type: full_connection   1ropout option: 80   width: layer 6   type: activation             relu
+layer 7   type: full_connection   0ropout option: 10   width: layer 8   type: activation             softmax
+
+
+Accuracy 98.60%   cost 0.049000   time 38770.8s   epochs 20   learning rate 0.0005000   batchsize 30   momentum 0.0   half life 5
+layer 1   type: input   width:1
+layer 5   type: full_connection   1ropout option: 80   width: layer 6   type: activation             relu
+layer 7   type: full_connection   0ropout option: 10   width: layer 8   type: activation             softmax
+
+
+Accuracy 52.50%   cost 1.388814   time 20448.3s   epochs 5   learning rate 0.0100000   batchsize 30   momentum 0.9   half life 5
+layer 1   type: input   width:3
+layer 6   type: full_connection   1ropout option: 64   width: layer 7   type: activation             relu
+layer 8   type: full_connection   0ropout option: 10   width: layer 9   type: activation             softmax
+
+
