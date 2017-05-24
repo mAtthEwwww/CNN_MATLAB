@@ -1,6 +1,6 @@
 # Convolution Neural Network on MATLAB
 
-##  Contents
+###  Contents
 CIFAR_LeNet.m, an example of CIFAR-10 image classification with LeNet
 
 MNIST_LeNet.m, an example of MNIST handwritten digits classification with LeNet
@@ -12,9 +12,11 @@ Gravity_main.m, an example of Gravity signal detection
 ### Datasets
 
 The MNIST database of handwritten digits
+
 http://yann.lecun.com/exdb/mnist/
 
 The CIFAR-10 dataset
+
 http://www.cs.toronto.edu/~kriz/cifar.html
 
     
@@ -49,3 +51,5 @@ Deep Residual Learning for Image Recognition
 https://arxiv.org/pdf/1512.03385.pdf
 
 On the Importance of Initialization and Momentum in Deep Learning
+
+http://www.cs.toronto.edu/~fritz/absps/momentum.pdf
