@@ -9,14 +9,16 @@ MNIST_ResNet.m, MNIST handwritten digits classfication with deep residual net (i
 
 Gravity_main.m, an example of Gravity signal detection
 
-## Datasets can be downloaded in
+### Datasets
 
+The MNIST database of handwritten digits
 http://yann.lecun.com/exdb/mnist/
 
+The CIFAR-10 dataset
 http://www.cs.toronto.edu/~kriz/cifar.html
 
     
-## Related papers
+### Related papers
 
 Gradient-based Learning Applied to Document Recognition
 
