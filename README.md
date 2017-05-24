@@ -10,7 +10,7 @@ Gravity_main.m, an example of Gravity signal detection
 
 Datasets can be downloaded in
 
-    http://yann.lecun.com/exdb/mnist/
+    <http://yann.lecun.com/exdb/mnist/>
 
     http://www.cs.toronto.edu/~kriz/cifar.html
 
